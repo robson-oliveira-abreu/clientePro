@@ -1,6 +1,25 @@
+const clients = [
+    {
+        id: 1,
+        type: 'pf',
+        name: 'tal',
+        responsibleName: 'fulano',
+        cnpjOrCpf: '12312132123',
+        phone: '63981000000',
+        adrees: 'avenida d',
+    },
+];
+
+const company = {
+    name: 'A+ Contabilidade',
+    owner: 'Aline Abreu',
+    photo: '../images/image.png',
+};
+
 export const data = [
     {
         id: 1,
+        clientId: 1,
         clientName: 'João',
         description: 'Mensalidade',
         amount: 150,

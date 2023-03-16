@@ -9,25 +9,36 @@ import {Container, Header, Form, Footer} from './styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackAuthParamList} from '../../routes/auth.stack.routes';
 
-type SigninScreenProps = NativeStackScreenProps<
+type SignupScreenProps = NativeStackScreenProps<
     RootStackAuthParamList,
-    'Signin'
+    'Signup'
 >;
 
-export function Signin({navigation}: SigninScreenProps) {
+export function Signup({navigation}: SignupScreenProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const signin = () => {
+    const signup = () => {
         if (password.length < 6) {
             return console.log('min 6 digits password');
         }
         auth()
-            .signInWithEmailAndPassword(email, password)
-            .then(userCredential => {
-                console.log(userCredential);
+            .createUserWithEmailAndPassword(email, password)
+            .then(userCredentials => {
+                console.log(userCredentials);
+                if (userCredentials?.user?.uid) {
+                    navigation.navigate('Signin');
+                }
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                console.log({error});
+                if (error.code === 'auth/email-already-in-use') {
+                    console.log('email já existe');
+                }
+                if (error.code === 'auth/invalid-email') {
+                    console.log('email invalido');
+                }
+            });
     };
 
     return (
@@ -51,11 +62,15 @@ export function Signin({navigation}: SigninScreenProps) {
                 />
             </Form>
             <Footer>
-                <Button title="Entrar" transparent={false} onPress={signin} />
                 <Button
                     title="Cadastrar"
+                    transparent={false}
+                    onPress={signup}
+                />
+                <Button
+                    title="Entrar"
                     transparent={true}
-                    onPress={() => navigation.navigate('Signup')}
+                    onPress={() => navigation.navigate('Signin')}
                 />
             </Footer>
         </Container>

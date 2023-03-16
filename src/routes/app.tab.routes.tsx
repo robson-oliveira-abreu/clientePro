@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Signin} from '../screens/Signin/Signin';
 import Icon from 'react-native-vector-icons/Feather';
 import {useTheme} from 'styled-components/native';
 import {ClientsList} from '../screens/ClientsList/ClientsList';
@@ -51,7 +50,7 @@ export function AppTabRoutes() {
             })}>
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Clients" component={ClientsList} />
-            <Tab.Screen name="Bills" component={Signin} />
+            <Tab.Screen name="Bills" component={Home} />
             <Tab.Screen name="Reports" component={ClientsList} />
         </Tab.Navigator>
     );

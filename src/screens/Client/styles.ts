@@ -33,6 +33,6 @@ export const ContentTitle = styled.Text`
 `;
 
 export const Content = styled.View`
-    flex-grow: 1;
+    flex: 1;
     padding: 0 16px;
 `;

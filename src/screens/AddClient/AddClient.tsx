@@ -45,7 +45,7 @@ export function AddClient() {
                 <Input placeholder="Telefone" />
                 <Input placeholder="Endereço" />
                 <ButtonWrapper>
-                    <Button title="Salvar" />
+                    <Button title="Cadastrar" />
                 </ButtonWrapper>
             </Content>
         </Container>
