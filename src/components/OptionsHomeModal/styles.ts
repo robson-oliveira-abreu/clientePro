@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
     flex: 1;
-    background-color: #00000050;
 `;
 export const TouchableClose = styled.TouchableOpacity`
     flex: 1;
@@ -13,7 +12,7 @@ export const Content = styled.View`
     background-color: ${({theme}) => theme.colors.shape_dark};
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    padding: 8px 20px;
+    padding: 8px 20px 32px;
 `;
 export const Button = styled.TouchableOpacity`
     z-index: 99;

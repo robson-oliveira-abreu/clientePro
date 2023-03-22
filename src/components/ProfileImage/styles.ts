@@ -6,6 +6,6 @@ export const Container = styled.TouchableWithoutFeedback`
 
 export const Image = styled.Image`
     width: 100%;
-    border: 2px ${({theme}) => theme.colors.main};
+    border: 2px solid ${({theme}) => theme.colors.main};
     margin: 20px 0 40px;
 `;

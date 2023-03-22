@@ -34,6 +34,7 @@ export const SelectButton = styled.TouchableOpacity<SelectButtonProps>`
 `;
 export const TextSelect = styled.Text`
     font-size: ${RFValue(18)}px;
+    color: ${({theme}) => theme.colors.text};
 `;
 
 export const ButtonWrapper = styled.View`

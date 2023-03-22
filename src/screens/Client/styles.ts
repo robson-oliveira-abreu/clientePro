@@ -21,6 +21,7 @@ export const TitleName = styled.Text`
 `;
 export const ClientInfo = styled.Text`
     font-size: ${RFValue(14)}px;
+    color: ${({theme}) => theme.colors.text};
 `;
 
 export const EditButton = styled.ScrollView`
@@ -29,6 +30,7 @@ export const EditButton = styled.ScrollView`
 
 export const ContentTitle = styled.Text`
     font-size: ${RFValue(14)}px;
+    color: ${({theme}) => theme.colors.text};
     margin: 24px 16px 16px;
 `;
 

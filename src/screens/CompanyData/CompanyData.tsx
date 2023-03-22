@@ -13,7 +13,6 @@ interface CompanyDataProps {
 export function CompanyData({user, setCompany}: CompanyDataProps) {
     const [companyName, setCompanyName] = useState('');
     const [name, setName] = useState('');
-    const [profileImage, setProfileImage] = useState('');
 
     const handleSaveCompany = () => {
         if (!user.uid) {
@@ -25,7 +24,6 @@ export function CompanyData({user, setCompany}: CompanyDataProps) {
             .set({
                 name: companyName,
                 owner: name,
-                photo: profileImage,
             })
             .then(() => {
                 firestore()
@@ -45,13 +43,7 @@ export function CompanyData({user, setCompany}: CompanyDataProps) {
 
     return (
         <Container>
-            <ProfileImage
-                size={150}
-                profileImage={profileImage}
-                setProfileImage={(imageUri: string) =>
-                    setProfileImage(imageUri)
-                }
-            />
+            <ProfileImage size={150} />
             <Input
                 placeholder="Nome da Empresa"
                 value={companyName}

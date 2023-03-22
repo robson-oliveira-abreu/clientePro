@@ -3,11 +3,10 @@ import {AvatarLogo} from '../../components/AvatarLogo/AvatarLogo';
 import {Button} from '../../components/Button/button';
 import {Input} from '../../components/Input/Input';
 
-import auth from '@react-native-firebase/auth';
-
 import {Container, Header, Form, Footer} from './styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackAuthParamList} from '../../routes/auth.stack.routes';
+import {useAuth} from '../../hooks/useAuth';
 
 type SigninScreenProps = NativeStackScreenProps<
     RootStackAuthParamList,
@@ -17,17 +16,13 @@ type SigninScreenProps = NativeStackScreenProps<
 export function Signin({navigation}: SigninScreenProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const auth = useAuth();
 
-    const signin = () => {
+    const handleSignin = () => {
         if (password.length < 6) {
             return console.log('min 6 digits password');
         }
-        auth()
-            .signInWithEmailAndPassword(email, password)
-            .then(userCredential => {
-                console.log(userCredential);
-            })
-            .catch(error => console.log(error));
+        auth.signin(email, password);
     };
 
     return (
@@ -51,7 +46,11 @@ export function Signin({navigation}: SigninScreenProps) {
                 />
             </Form>
             <Footer>
-                <Button title="Entrar" transparent={false} onPress={signin} />
+                <Button
+                    title="Entrar"
+                    transparent={false}
+                    onPress={handleSignin}
+                />
                 <Button
                     title="Cadastrar"
                     transparent={true}
