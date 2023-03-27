@@ -1,6 +1,9 @@
-import React, {useState} from 'react';
-import {AddButton} from '../../components/AddButton/AddButton';
-import {InputSearch} from '../../components/InputSearch/InputSearch';
+import React, { useContext, useEffect, useState } from 'react';
+import firestore, {
+    FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
+import { AddButton } from '../../components/AddButton/AddButton';
+import { InputSearch } from '../../components/InputSearch/InputSearch';
 import {
     Container,
     Header,
@@ -9,26 +12,57 @@ import {
     CardCLientTitle,
 } from './styles';
 
-import {data} from '../../data';
-import {useNavigation} from '@react-navigation/native';
+import { AuthContext } from '../../context/AuthContext/AuthContext';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootTabParamList } from '../../routes/app.tab.routes';
 
-interface Client {
-    id: number;
-    clientName: string;
-    amount: number;
-}
-export function ClientsList() {
-    const [clients, setClients] = useState<Client[]>(data);
+type ClientListProps = NativeStackScreenProps<
+    RootTabParamList,
+    'Clients',
+    undefined
+>;
+
+export function ClientsList({ navigation }: ClientListProps) {
+    const [clients, setClients] = useState<
+        FirebaseFirestoreTypes.DocumentData[] | null
+    >(null);
     const [filterValue, setFilterValue] = useState('');
-    const navigation = useNavigation();
 
-    const filteredClints: Client[] = clients.filter(client =>
-        client.clientName.toLowerCase().includes(filterValue.toLowerCase()),
-    );
+    const { user } = useContext(AuthContext);
 
-    if (false) {
-        setClients(filteredClints);
-    }
+    const filteredClints: FirebaseFirestoreTypes.DocumentData[] =
+        clients && clients?.length > 0
+            ? clients?.filter(
+                  client =>
+                      client &&
+                      client?.name
+                          ?.toLowerCase()
+                          .includes(filterValue.toLowerCase()),
+              )
+            : [];
+
+    useEffect(() => {
+        const fetchClients = () => {
+            if (clients !== null || !user?.uid) {
+                return;
+            }
+
+            firestore()
+                .collection('company')
+                .doc(user?.uid)
+                .collection('clients')
+                .get()
+                .then(res => {
+                    console.log({ res });
+                    if (res) {
+                        setClients(() =>
+                            res.empty ? [] : res.docs.map(cli => cli.data()),
+                        );
+                    }
+                });
+        };
+        fetchClients();
+    }, [clients, user]);
 
     return (
         <Container>
@@ -39,22 +73,20 @@ export function ClientsList() {
                 />
             </Header>
             <ContentList
-                data={filteredClints}
-                renderItem={({item}: {item: any}) => (
+                data={filterValue ? filteredClints : clients}
+                renderItem={({ item }: { item: any }) => (
                     <CardCLient
                         key={item.id}
                         onPress={() =>
-                            navigation.navigate('Client', {
-                                id: item.id,
-                                name: item.clientName,
-                            })
-                        }>
-                        <CardCLientTitle>{item.clientName}</CardCLientTitle>
+                            navigation?.navigate('Client', { client: item })
+                        }
+                    >
+                        <CardCLientTitle>{item.name}</CardCLientTitle>
                     </CardCLient>
                 )}
-                keyExtractor={(item: any) => item.id}
+                keyExtractor={(item: any) => item.document}
             />
-            <AddButton onPress={() => navigation.navigate('AddClient')} />
+            <AddButton onPress={() => navigation?.navigate('AddClient')} />
         </Container>
     );
 }

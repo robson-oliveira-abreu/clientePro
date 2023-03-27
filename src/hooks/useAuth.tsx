@@ -1,6 +1,6 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 export function useAuth() {
     const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
@@ -11,13 +11,12 @@ export function useAuth() {
         auth()
             .createUserWithEmailAndPassword(email, password)
             .then(userCredentials => {
-                console.log(userCredentials);
                 if (userCredentials?.user?.uid) {
                     return true;
                 }
             })
             .catch(error => {
-                console.log({error});
+                console.log({ error });
                 if (error.code === 'auth/email-already-in-use') {
                     console.log('email já existe');
                 }
@@ -32,7 +31,7 @@ export function useAuth() {
         auth()
             .signInWithEmailAndPassword(email, password)
             .then(userCredential => {
-                console.log(userCredential);
+                console.log({ userCredential });
             })
             .catch(error => console.log(error));
     };
@@ -48,5 +47,5 @@ export function useAuth() {
         return () => unsubscribe();
     }, [initializing]);
 
-    return {user, initializing, signup, signin};
+    return { user, initializing, signup, signin };
 }

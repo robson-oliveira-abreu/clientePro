@@ -1,6 +1,6 @@
-import {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import React, {createContext} from 'react';
-import {useAuth} from '../../hooks/useAuth';
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import React, { createContext } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
 interface AuthProviderProps {
     children: React.ReactElement;
@@ -16,13 +16,13 @@ const AuthContext = createContext<AuthContextProps>({
     initializing: false,
 });
 
-const AuthProvider = ({children}: AuthProviderProps) => {
-    const {user, initializing} = useAuth();
+const AuthProvider = ({ children }: AuthProviderProps) => {
+    const { user, initializing } = useAuth();
     return (
-        <AuthContext.Provider value={{user, initializing}}>
+        <AuthContext.Provider value={{ user, initializing }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-export {AuthProvider, AuthContext};
+export { AuthProvider, AuthContext };

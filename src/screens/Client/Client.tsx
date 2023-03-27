@@ -1,7 +1,7 @@
 import React from 'react';
-import {FlatList, ListRenderItemInfo} from 'react-native';
+import { FlatList, ListRenderItemInfo } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {BackButton} from '../../components/BackButton/BackButton';
+import { BackButton } from '../../components/BackButton/BackButton';
 
 import {
     Container,
@@ -13,12 +13,12 @@ import {
     ClientInfo,
     ContentTitle,
 } from './styles';
-import {Bill} from '../../components/Bill/Bill';
-import {useTheme} from 'styled-components/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../routes/app.stack.routes';
+import { Bill } from '../../components/Bill/Bill';
+import { useTheme } from 'styled-components/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {data} from '../../data';
+import { data } from '../../data';
+import { RootStackParamList } from '../../routes/app.stack.routes';
 
 type ClientScreenProps = NativeStackScreenProps<RootStackParamList, 'Client'>;
 
@@ -29,11 +29,13 @@ export interface BillProps {
     paid: boolean;
 }
 
-export function Client({route}: ClientScreenProps) {
-    const params = route.params;
+export function Client({ route }: ClientScreenProps) {
+    const { client } = route.params;
+
+    console.log({ client });
 
     const theme = useTheme();
-    const renderBill = ({item}: ListRenderItemInfo<BillProps>) => {
+    const renderBill = ({ item }: ListRenderItemInfo<BillProps>) => {
         return (
             <Bill
                 description={item.description}
@@ -57,17 +59,19 @@ export function Client({route}: ClientScreenProps) {
             </HeaderButtons>
 
             <Header>
-                <TitleName>
-                    {params.id} - {params.name}
-                </TitleName>
-                <ClientInfo>63 98555-0101</ClientInfo>
-                <ClientInfo>12.345.678/0001-01</ClientInfo>
-                <ClientInfo>Rua: quebrada, quadra: 65, lote: 36</ClientInfo>
+                <TitleName>{client?.name}</TitleName>
+                <ClientInfo>Responsavel: {client?.responsible}</ClientInfo>
+                <ClientInfo>Telefone: {client?.phone}</ClientInfo>
+                <ClientInfo>
+                    {client.clientType === 'PJ' ? 'CNPJ:' : 'CPF:'}{' '}
+                    {client?.document}
+                </ClientInfo>
+                <ClientInfo>Endereço: {client?.address}</ClientInfo>
             </Header>
             <ContentTitle>Historico</ContentTitle>
             <Content>
                 <FlatList
-                    data={data.filter(data => !!data.paid)}
+                    data={data.filter(d => !!d.paid)}
                     keyExtractor={bill => String(bill.id)}
                     renderItem={renderBill}
                 />

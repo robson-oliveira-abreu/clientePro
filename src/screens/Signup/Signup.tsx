@@ -1,19 +1,19 @@
-import React, {useState} from 'react';
-import {AvatarLogo} from '../../components/AvatarLogo/AvatarLogo';
-import {Button} from '../../components/Button/button';
-import {Input} from '../../components/Input/Input';
+import React, { useState } from 'react';
+import { AvatarLogo } from '../../components/AvatarLogo/AvatarLogo';
+import { Button } from '../../components/Button/button';
+import { Input } from '../../components/Input/Input';
 
-import {Container, Header, Form, Footer} from './styles';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackAuthParamList} from '../../routes/auth.stack.routes';
-import {useAuth} from '../../hooks/useAuth';
+import { Container, Header, Form, Footer } from './styles';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackAuthParamList } from '../../routes/auth.stack.routes';
+import { useAuth } from '../../hooks/useAuth';
 
 type SignupScreenProps = NativeStackScreenProps<
     RootStackAuthParamList,
     'Signup'
 >;
 
-export function Signup({navigation}: SignupScreenProps) {
+export function Signup({ navigation }: SignupScreenProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const auth = useAuth();

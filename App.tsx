@@ -1,14 +1,17 @@
 import React from 'react';
-import {ThemeProvider} from 'styled-components/native';
+import { ThemeProvider } from 'styled-components/native';
 import theme from './src/styles/theme';
-import {Routes} from './src/routes/routes';
-import {AuthProvider} from './src/context/AuthContext/AuthContext';
+import { Routes } from './src/routes/routes';
+import { AuthProvider } from './src/context/AuthContext/AuthContext';
+import { CompanyProvider } from './src/context/CompanyContext/CompanyContext';
 
 function App(): JSX.Element {
     return (
         <ThemeProvider theme={theme}>
             <AuthProvider>
-                <Routes />
+                <CompanyProvider>
+                    <Routes />
+                </CompanyProvider>
             </AuthProvider>
         </ThemeProvider>
     );
