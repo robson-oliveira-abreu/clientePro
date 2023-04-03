@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AddClient } from '../screens/AddClient/AddClient';
 import { AppTabRoutes } from './app.tab.routes';
 import { Client } from '../screens/Client/Client';
+import { AddBills } from '../screens/AddBills/AddBills';
 
 export interface ClientProps {
     address: string;
@@ -19,6 +20,7 @@ export interface ClientProps {
 export type RootStackParamList = {
     HomeTab: undefined;
     AddClient: undefined;
+    AddBills: { client: ClientProps };
     Client: { client: ClientProps };
 };
 
@@ -34,6 +36,7 @@ export function AppStackRoutes() {
             <Stack.Group>
                 <Stack.Screen name="HomeTab" component={AppTabRoutes} />
                 <Stack.Screen name="AddClient" component={AddClient} />
+                <Stack.Screen name="AddBills" component={AddBills} />
                 <Stack.Screen name="Client" component={Client} />
             </Stack.Group>
         </Stack.Navigator>

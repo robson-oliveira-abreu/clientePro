@@ -15,6 +15,7 @@ import {
 import { AuthContext } from '../../context/AuthContext/AuthContext';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from '../../routes/app.tab.routes';
+import { isEqual } from 'lodash';
 
 type ClientListProps = NativeStackScreenProps<
     RootTabParamList,
@@ -51,13 +52,12 @@ export function ClientsList({ navigation }: ClientListProps) {
                 .collection('company')
                 .doc(user?.uid)
                 .collection('clients')
-                .get()
-                .then(res => {
-                    console.log({ res });
-                    if (res) {
-                        setClients(() =>
-                            res.empty ? [] : res.docs.map(cli => cli.data()),
-                        );
+                .onSnapshot(documentSnapshot => {
+                    const newClients = documentSnapshot.docs.map(doc =>
+                        doc.data(),
+                    );
+                    if (!isEqual(newClients, clients)) {
+                        setClients(newClients);
                     }
                 });
         };

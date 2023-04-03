@@ -14,6 +14,7 @@ export type RootTabParamList = {
     Bills: undefined;
     Reports: undefined;
     AddClient: undefined;
+    AddBills: { client: ClientProps };
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();

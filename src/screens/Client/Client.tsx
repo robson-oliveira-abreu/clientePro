@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, ListRenderItemInfo } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { BackButton } from '../../components/BackButton/BackButton';
@@ -17,25 +17,26 @@ import { Bill } from '../../components/Bill/Bill';
 import { useTheme } from 'styled-components/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { data } from '../../data';
+import firestore, {
+    FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
+
 import { RootStackParamList } from '../../routes/app.stack.routes';
+import { AddButton } from '../../components/AddButton/AddButton';
+import { isEqual } from 'lodash';
 
 type ClientScreenProps = NativeStackScreenProps<RootStackParamList, 'Client'>;
 
-export interface BillProps {
-    id: number;
-    description: string;
-    amount: number;
-    paid: boolean;
-}
-
-export function Client({ route }: ClientScreenProps) {
+export function Client({ route, navigation }: ClientScreenProps) {
     const { client } = route.params;
-
-    console.log({ client });
+    const [bills, setBills] = useState<
+        FirebaseFirestoreTypes.DocumentData[] | null
+    >(null);
 
     const theme = useTheme();
-    const renderBill = ({ item }: ListRenderItemInfo<BillProps>) => {
+    const renderBill = ({
+        item,
+    }: ListRenderItemInfo<FirebaseFirestoreTypes.DocumentData>) => {
         return (
             <Bill
                 description={item.description}
@@ -44,6 +45,24 @@ export function Client({ route }: ClientScreenProps) {
             />
         );
     };
+
+    useEffect(() => {
+        if (!client.document) {
+            return;
+        }
+        const subscriber = firestore()
+            .collection('bills')
+            .where('userId', '==', client.document)
+            .onSnapshot(documentSnapshot => {
+                const newBills = documentSnapshot.docs.map(doc => doc.data());
+                if (!isEqual(newBills, bills)) {
+                    setBills(newBills);
+                }
+            });
+
+        // Stop listening for updates when no longer required
+        return () => subscriber();
+    }, [client.document, bills]);
 
     return (
         <Container>
@@ -71,11 +90,16 @@ export function Client({ route }: ClientScreenProps) {
             <ContentTitle>Historico</ContentTitle>
             <Content>
                 <FlatList
-                    data={data.filter(d => !!d.paid)}
-                    keyExtractor={bill => String(bill.id)}
+                    data={bills}
+                    keyExtractor={bill =>
+                        `${bill.amount}.${bill.category}.${bill.description}`
+                    }
                     renderItem={renderBill}
                 />
             </Content>
+            <AddButton
+                onPress={() => navigation.navigate('AddBills', { client })}
+            />
         </Container>
     );
 }

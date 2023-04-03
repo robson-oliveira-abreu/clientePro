@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Signin} from '../screens/Signin/Signin';
-import {Signup} from '../screens/Signup/Signup';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Signin } from '../screens/Signin/Signin';
+import { Signup } from '../screens/Signup/Signup';
 
 export type RootStackAuthParamList = {
     Signin: undefined;
@@ -17,7 +17,8 @@ export function AuthStackRoutes() {
             screenOptions={{
                 headerShown: false,
             }}
-            initialRouteName="Signin">
+            initialRouteName="Signin"
+        >
             <Stack.Group>
                 <Stack.Screen name="Signin" component={Signin} />
                 <Stack.Screen name="Signup" component={Signup} />
