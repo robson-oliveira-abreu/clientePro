@@ -43,25 +43,21 @@ export function ClientsList({ navigation }: ClientListProps) {
             : [];
 
     useEffect(() => {
-        const fetchClients = () => {
-            if (clients !== null || !user?.uid) {
-                return;
-            }
+        if (clients !== null || !user?.uid) {
+            return;
+        }
+        const subscriber = firestore()
+            .collection('company')
+            .doc(user?.uid)
+            .collection('clients')
+            .onSnapshot(documentSnapshot => {
+                const newClients = documentSnapshot.docs.map(doc => doc.data());
+                if (!isEqual(newClients, clients)) {
+                    setClients(newClients);
+                }
+            });
 
-            firestore()
-                .collection('company')
-                .doc(user?.uid)
-                .collection('clients')
-                .onSnapshot(documentSnapshot => {
-                    const newClients = documentSnapshot.docs.map(doc =>
-                        doc.data(),
-                    );
-                    if (!isEqual(newClients, clients)) {
-                        setClients(newClients);
-                    }
-                });
-        };
-        fetchClients();
+        return () => subscriber();
     }, [clients, user]);
 
     return (

@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-    Modal,
     FlatList,
     ListRenderItemInfo,
     ActivityIndicator,
+    Dimensions,
+    Platform,
 } from 'react-native';
+import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Feather';
 import { OptionsHomeModal } from '../../components/OptionsHomeModal/OptionsHomeModal';
 
@@ -82,6 +84,19 @@ const FlatListHeader = ({
     </Header>
 );
 
+const deviceWidth =
+    Platform.OS === 'ios'
+        ? Dimensions.get('window').width
+        : require('react-native-extra-dimensions-android').get(
+              'REAL_WINDOW_WIDTH',
+          );
+const deviceHeight =
+    Platform.OS === 'ios'
+        ? Dimensions.get('window').height
+        : require('react-native-extra-dimensions-android').get(
+              'REAL_WINDOW_HEIGHT',
+          );
+
 export function Home() {
     const [bills, setBills] = useState(data.filter(dat => !dat.paid));
     const [optionsModal, setOptionsModal] = useState(false);
@@ -134,23 +149,21 @@ export function Home() {
             </Content>
 
             <Modal
-                visible={optionsModal}
-                onRequestClose={() => setOptionsModal(false)}
-                transparent
-                animationType="slide"
+                isVisible={optionsModal}
+                deviceWidth={deviceWidth}
+                deviceHeight={deviceHeight}
+                backdropOpacity={0.5}
+                style={{ margin: 0 }}
             >
                 <OptionsHomeModal handleClose={() => setOptionsModal(false)} />
             </Modal>
 
             {auth.user?.uid && !company?.name && (
-                <Modal
-                    visible={!!(auth.user?.uid && !company?.name)}
-                    animationType="slide"
-                >
+                <Modal isVisible={!!(auth.user?.uid && !company?.name)}>
                     <CompanyData />
                 </Modal>
             )}
-            <Modal visible={initializingCompany} transparent>
+            <Modal isVisible={initializingCompany}>
                 <Initializing>
                     <ActivityIndicator size={'large'} />
                 </Initializing>
