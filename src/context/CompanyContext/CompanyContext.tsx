@@ -1,13 +1,13 @@
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import React, { createContext } from 'react';
-import { useCompany } from '../../hooks/useCompany';
+import { ICompany, useCompany } from '../../hooks/useCompany';
 
 interface CompanyProviderProps {
     children: React.ReactElement;
 }
 
 type CompanyContextProps = {
-    company: FirebaseFirestoreTypes.DocumentData | null | undefined;
+    company: ICompany | null | undefined;
     initializing: boolean;
     handleSaveCompany: (companyName: string, name: string) => void;
 };

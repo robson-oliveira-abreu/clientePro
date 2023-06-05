@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
     Modal,
     FlatList,
@@ -7,6 +7,18 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { OptionsHomeModal } from '../../components/OptionsHomeModal/OptionsHomeModal';
+
+import { Bill } from '../../components/Bill/Bill';
+import { useTheme } from 'styled-components/native';
+import { AuthContext } from '../../context/AuthContext/AuthContext';
+import { CompanyData } from '../CompanyData/CompanyData';
+
+import firestore, {
+    FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
+import { ProfileImage } from '../../components/ProfileImage/ProfileImage';
+import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
+import { FormatCurrencyBRL } from '../../utils/FormatCurrencyBRL';
 
 import {
     Container,
@@ -24,109 +36,121 @@ import {
     Initializing,
 } from './styles';
 
-import { data } from '../../data';
-import { Bill } from '../../components/Bill/Bill';
-import { useTheme } from 'styled-components/native';
-import { AuthContext } from '../../context/AuthContext/AuthContext';
-import { CompanyData } from '../CompanyData/CompanyData';
-
-import firestore, {
-    FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
-import { ProfileImage } from '../../components/ProfileImage/ProfileImage';
-import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
-
-interface BillsHomeProps {
-    id: number;
-    clientName: string;
-    amount: number;
-    paid: boolean;
+interface IBills extends FirebaseFirestoreTypes.DocumentData {
+    id?: number;
+    clientId?: number;
+    clientName?: string;
+    description?: string;
+    amount?: number;
+    paid?: boolean;
 }
-interface FlatListHeaderProps {
-    name: string;
-    handleSetBills: () => void;
-    color: string;
+interface ITotalsState {
+    totalIncome: number;
+    totalMissing: number;
+    totalReceived: number;
 }
 
-const renderBill = ({ item }: ListRenderItemInfo<BillsHomeProps>) => {
+const renderBill = ({ item }: ListRenderItemInfo<IBills>) => {
     return (
         <Bill
-            description={item.clientName}
-            amount={item.amount}
-            paid={item.paid}
+            description={item.description!}
+            client={item.clientName}
+            amount={item.amount!}
+            paid={item.paid!}
         />
     );
 };
 
-const FlatListHeader = ({
-    name,
-    handleSetBills,
-    color,
-}: FlatListHeaderProps) => (
-    <Header>
-        <HeaderTop>
-            <HomeTitle>{name}</HomeTitle>
-            <OptionsButton onPress={handleSetBills}>
-                <Icon name="more-vertical" size={30} color={color} />
-            </OptionsButton>
-        </HeaderTop>
-        <HeaderContent>
-            <ProfileImage size={120} />
-            <ContentValues>
-                <Amount>R$ 12.000,00</Amount>
-                <AmountReceived>R$ 5.800,00</AmountReceived>
-                <AmountReceivable>R$ 4.500,00</AmountReceivable>
-            </ContentValues>
-        </HeaderContent>
-        <ContentTitle>A Receber</ContentTitle>
-    </Header>
-);
-
 export function Home() {
-    const [bills, setBills] = useState(data.filter(dat => !dat.paid));
-    const [optionsModal, setOptionsModal] = useState(false);
-    const theme = useTheme();
-
-    const [clients, setClients] = useState<
-        FirebaseFirestoreTypes.DocumentData[] | null
-    >(null);
-
     const auth = useContext(AuthContext);
     const { company, initializing: initializingCompany } =
         useContext(CompanyContext);
+    const theme = useTheme();
+
+    const [bills, setBills] = useState<Array<IBills>>([]);
+    const [optionsModal, setOptionsModal] = useState(false);
+    const unPaidBills = useMemo(() => bills.filter(bill => !bill.paid), [bills]);
+    const totals = getHomeTotals();
+
+    function getHomeTotals() {
+        const totalIncome = bills.reduce(
+            (total, bill) => total + bill?.amount!,
+            0,
+        );
+
+        let totalReceived = 0;
+        let totalMissing = 0;
+
+        bills.forEach(bill => {
+            if (bill?.paid) {
+                totalReceived += bill?.amount!;
+            } else {
+                totalMissing += bill?.amount!;
+            }
+        });
+
+        return {
+            totalIncome,
+            totalReceived,
+            totalMissing,
+        };
+    }
 
     useEffect(() => {
-        const fetchClients = () => {
-            if (clients) {
-                return;
-            }
-            firestore()
-                .collection('company')
-                .doc(auth.user?.uid)
-                .collection('clients')
-                .get()
-                .then(clientsList => {
-                    setClients(clientsList.docs);
-                });
-        };
-        fetchClients();
-    }, [auth.user?.uid, clients]);
+        const companyId = company?.id;
+        if (!companyId) {
+            return;
+        }
+        const subscriber = firestore()
+            .collection('bills')
+            .where('companyId', '==', company?.id)
+            .onSnapshot(data => {
+                return setBills(data.docs.map(doc => doc.data()));
+            });
+
+        return () => subscriber();
+    }, [company?.id]);
 
     return (
         <Container>
             <Content>
                 <FlatList
-                    data={bills}
+                    data={unPaidBills}
                     renderItem={renderBill}
                     ListHeaderComponent={
-                        <FlatListHeader
-                            name={company?.name}
-                            handleSetBills={() => {
-                                setBills(data);
-                                setOptionsModal(true);
-                            }}
-                            color={theme.colors.text}
-                        />
+                        <Header>
+                            <HeaderTop>
+                                <HomeTitle>{company?.name!}</HomeTitle>
+                                <OptionsButton
+                                    onPress={() => {
+                                        setOptionsModal(true);
+                                    }}
+                                >
+                                    <Icon
+                                        name="more-vertical"
+                                        size={30}
+                                        color={theme.colors.text}
+                                    />
+                                </OptionsButton>
+                            </HeaderTop>
+                            <HeaderContent>
+                                <ProfileImage size={120} />
+                                <ContentValues>
+                                    <Amount>
+                                        {FormatCurrencyBRL(totals.totalIncome)}
+                                    </Amount>
+                                    <AmountReceived>
+                                        {FormatCurrencyBRL(
+                                            totals.totalReceived,
+                                        )}
+                                    </AmountReceived>
+                                    <AmountReceivable>
+                                        {FormatCurrencyBRL(totals.totalMissing)}
+                                    </AmountReceivable>
+                                </ContentValues>
+                            </HeaderContent>
+                            <ContentTitle>A Receber</ContentTitle>
+                        </Header>
                     }
                     stickyHeaderIndices={[0]}
                     stickyHeaderHiddenOnScroll
@@ -142,14 +166,15 @@ export function Home() {
                 <OptionsHomeModal handleClose={() => setOptionsModal(false)} />
             </Modal>
 
-            {auth.user?.uid && !company?.name && (
-                <Modal
-                    visible={!!(auth.user?.uid && !company?.name)}
-                    animationType="slide"
-                >
-                    <CompanyData />
-                </Modal>
-            )}
+            <Modal
+                visible={
+                    !!auth.user?.uid && !company?.name && !initializingCompany
+                }
+                animationType="slide"
+            >
+                <CompanyData />
+            </Modal>
+
             <Modal visible={initializingCompany} transparent>
                 <Initializing>
                     <ActivityIndicator size={'large'} />

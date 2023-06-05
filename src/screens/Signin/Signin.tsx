@@ -1,27 +1,36 @@
-import React, {useState} from 'react';
-import {AvatarLogo} from '../../components/AvatarLogo/AvatarLogo';
-import {Button} from '../../components/Button/button';
-import {Input} from '../../components/Input/Input';
+import React, { useState } from 'react';
+import { Alert } from 'react-native';
+import { AvatarLogo } from '../../components/AvatarLogo/AvatarLogo';
+import { Button } from '../../components/Button/button';
+import { Input } from '../../components/Input/Input';
 
-import {Container, Header, Form, Footer} from './styles';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackAuthParamList} from '../../routes/auth.stack.routes';
-import {useAuth} from '../../hooks/useAuth';
+import { Container, Header, Form, Footer } from './styles';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackAuthParamList } from '../../routes/auth.stack.routes';
+import { useAuth } from '../../hooks/useAuth';
+import { InputPassword } from '../../components/InputPassword/InputPassword';
 
 type SigninScreenProps = NativeStackScreenProps<
     RootStackAuthParamList,
     'Signin'
 >;
 
-export function Signin({navigation}: SigninScreenProps) {
+export function Signin({ navigation }: SigninScreenProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const auth = useAuth();
 
     const handleSignin = () => {
-        if (password.length < 6) {
-            return console.log('min 6 digits password');
+        if (!email || !password) {
+            Alert.alert('Login', 'Preencha todos os campos.');
+            return;
         }
+
+        if (!email.includes('@') || email.length < 8 || password.length < 6) {
+            Alert.alert('Login', 'Email e/ou senha validos.');
+            return;
+        }
+
         auth.signin(email, password);
     };
 
@@ -37,10 +46,8 @@ export function Signin({navigation}: SigninScreenProps) {
                     value={email}
                     onChangeText={setEmail}
                 />
-                <Input
+                <InputPassword
                     placeholder="Senha"
-                    keyboardType="visible-password"
-                    secureTextEntry={true}
                     value={password}
                     onChangeText={setPassword}
                 />

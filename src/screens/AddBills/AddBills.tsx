@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { TextInputProps } from 'react-native';
 import { useForm, useController, FieldValues, Control } from 'react-hook-form';
 import { useTheme } from 'styled-components/native';
@@ -21,6 +21,7 @@ import DatePicker from 'react-native-date-picker';
 import { utcToZonedTime, format } from 'date-fns-tz';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../routes/app.stack.routes';
+import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
 
 interface InputFormPops extends TextInputProps {
     name: string;
@@ -58,6 +59,7 @@ type AddBillScreenProps = NativeStackScreenProps<
 
 export function AddBills({ route }: AddBillScreenProps) {
     const { client } = route.params;
+    const { company } = useContext(CompanyContext);
 
     const navigation = useNavigation();
     const { control, handleSubmit } = useForm();
@@ -71,17 +73,25 @@ export function AddBills({ route }: AddBillScreenProps) {
     const theme = useTheme();
 
     const onSubmit = (data: any) => {
+        const amount = parseFloat(
+            data?.amount.replace(/\./g, '').replace(',', '.'),
+        );
         if (client?.document) {
             const newBill = {
-                userId: client?.document,
                 ...data,
+                amount: amount,
                 expiration: date,
+                clientName: client?.name,
+                clientId: client?.id,
+                companyId: company?.id,
+                paid: false,
             };
 
             firestore()
                 .collection('bills')
                 .add(newBill)
-                .then(() => {
+                .then(docRef => {
+                    docRef.update({ id: docRef.id });
                     navigation.goBack();
                 });
         }

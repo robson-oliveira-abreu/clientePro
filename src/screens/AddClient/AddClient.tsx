@@ -62,7 +62,7 @@ export function AddClient() {
         let docExists = false;
 
         firestore()
-            .collection('company')
+            .collection('companies')
             .doc(user?.uid)
             .collection('clients')
             .doc(newClient.document)
@@ -75,12 +75,12 @@ export function AddClient() {
 
         if (!docExists) {
             firestore()
-                .collection('company')
+                .collection('companies')
                 .doc(user?.uid)
                 .collection('clients')
-                .doc(newClient.document)
-                .set(newClient)
-                .then(() => {
+                .add(newClient)
+                .then(docRef => {
+                    docRef.update({ id: docRef.id });
                     navigation.goBack();
                 });
         }

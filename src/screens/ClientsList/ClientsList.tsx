@@ -10,12 +10,14 @@ import {
     ContentList,
     CardCLient,
     CardCLientTitle,
+    Title,
 } from './styles';
 
 import { AuthContext } from '../../context/AuthContext/AuthContext';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootTabParamList } from '../../routes/app.tab.routes';
 import { isEqual } from 'lodash';
+import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
 
 type ClientListProps = NativeStackScreenProps<
     RootTabParamList,
@@ -28,6 +30,7 @@ export function ClientsList({ navigation }: ClientListProps) {
         FirebaseFirestoreTypes.DocumentData[] | null
     >(null);
     const [filterValue, setFilterValue] = useState('');
+    const {company} = useContext(CompanyContext);
 
     const { user } = useContext(AuthContext);
 
@@ -44,13 +47,13 @@ export function ClientsList({ navigation }: ClientListProps) {
 
     useEffect(() => {
         const fetchClients = () => {
-            if (clients !== null || !user?.uid) {
+            if (clients !== null || !company?.id) {
                 return;
             }
 
             firestore()
-                .collection('company')
-                .doc(user?.uid)
+                .collection('companies')
+                .doc(company.id)
                 .collection('clients')
                 .onSnapshot(documentSnapshot => {
                     const newClients = documentSnapshot.docs.map(doc =>
@@ -72,6 +75,7 @@ export function ClientsList({ navigation }: ClientListProps) {
                     value={filterValue}
                 />
             </Header>
+            <Title>Clientes</Title>
             <ContentList
                 data={filterValue ? filteredClints : clients}
                 renderItem={({ item }: { item: any }) => (

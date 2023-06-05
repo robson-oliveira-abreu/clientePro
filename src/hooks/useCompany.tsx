@@ -5,40 +5,45 @@ import firestore, {
 } from '@react-native-firebase/firestore';
 import { AuthContext } from '../context/AuthContext/AuthContext';
 
+export interface ICompany extends FirebaseFirestoreTypes.DocumentData  {
+    name?: string;
+    owner?: string;
+    id?: string;
+};
+
 export function useCompany() {
     const [company, setCompany] = useState<
-        FirebaseFirestoreTypes.DocumentData | null | undefined
+        ICompany | null | undefined
     >(null);
     const auth = useContext(AuthContext);
 
     const [initializing, setInitializing] = useState(true);
 
-    const handleSaveCompany = (companyName: string, name: string) => {
+    function handleSaveCompany(companyName: string, name: string) {
         if (!auth.user?.uid) {
             return;
         }
         firestore()
-            .collection('company')
+            .collection('companies')
             .doc(auth.user.uid)
             .set({
                 name: companyName,
                 owner: name,
+                id: auth.user.uid,
             })
             .then(() => {
                 firestore()
-                    .collection('company')
+                    .collection('companies')
                     .doc(auth.user?.uid)
                     .get()
                     .then(res => {
-                        setCompany(() => {
-                            const newState = res.data();
-                            if (newState) {
-                                return newState;
-                            }
-                        });
+                        const newState = res.data();
+                        if (newState) {
+                            setCompany(newState);
+                        }
                     });
             });
-    };
+    }
 
     useEffect(() => {
         if (company) {
@@ -46,7 +51,7 @@ export function useCompany() {
             return;
         }
         firestore()
-            .collection('company')
+            .collection('companies')
             .doc(auth?.user?.uid)
             .get()
             .then(_company => {

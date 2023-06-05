@@ -6,13 +6,15 @@ import { useTheme } from 'styled-components/native';
 import { ClientsList } from '../screens/ClientsList/ClientsList';
 import { Home } from '../screens/Home/Home';
 import { ClientProps } from './app.stack.routes';
+import { Bills } from '../screens/Bills/Bills';
+import { Profile } from '../screens/Profile/Profile';
 
 export type RootTabParamList = {
     Home: undefined;
     Clients: undefined;
     Client: { client: ClientProps };
     Bills: undefined;
-    Reports: undefined;
+    Profile: undefined;
     AddClient: undefined;
     AddBills: { client: ClientProps };
 };
@@ -29,8 +31,8 @@ const tabIcons = (name: string, color: string) => {
     if (name === 'Bills') {
         return <Icon name="dollar-sign" size={30} color={color} />;
     }
-    if (name === 'Reports') {
-        return <Icon name="trending-up" size={30} color={color} />;
+    if (name === 'Profile') {
+        return <Icon name="user" size={30} color={color} />;
     }
 };
 
@@ -55,8 +57,8 @@ export function AppTabRoutes() {
         >
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Clients" component={ClientsList} />
-            <Tab.Screen name="Bills" component={Home} />
-            <Tab.Screen name="Reports" component={Home} />
+            <Tab.Screen name="Bills" component={Bills} />
+            <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
     );
 }

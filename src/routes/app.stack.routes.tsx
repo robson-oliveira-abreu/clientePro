@@ -7,6 +7,7 @@ import { Client } from '../screens/Client/Client';
 import { AddBills } from '../screens/AddBills/AddBills';
 
 export interface ClientProps {
+    id: string;
     address: string;
     clientType: 'PJ' | 'PF';
     document: number;

@@ -24,14 +24,13 @@ import firestore, {
 import { RootStackParamList } from '../../routes/app.stack.routes';
 import { AddButton } from '../../components/AddButton/AddButton';
 import { isEqual } from 'lodash';
+import { BillType } from '../../types/BillType';
 
 type ClientScreenProps = NativeStackScreenProps<RootStackParamList, 'Client'>;
 
 export function Client({ route, navigation }: ClientScreenProps) {
     const { client } = route.params;
-    const [bills, setBills] = useState<
-        FirebaseFirestoreTypes.DocumentData[] | null
-    >(null);
+    const [bills, setBills] = useState<Partial<BillType>[]>([]);
 
     const theme = useTheme();
     const renderBill = ({
@@ -52,7 +51,7 @@ export function Client({ route, navigation }: ClientScreenProps) {
         }
         const subscriber = firestore()
             .collection('bills')
-            .where('userId', '==', client.document)
+            .where('clientId', '==', client.id)
             .onSnapshot(documentSnapshot => {
                 const newBills = documentSnapshot.docs.map(doc => doc.data());
                 if (!isEqual(newBills, bills)) {
@@ -91,9 +90,7 @@ export function Client({ route, navigation }: ClientScreenProps) {
             <Content>
                 <FlatList
                     data={bills}
-                    keyExtractor={bill =>
-                        `${bill.amount}.${bill.category}.${bill.description}`
-                    }
+                    keyExtractor={bill => bill.id!}
                     renderItem={renderBill}
                 />
             </Content>

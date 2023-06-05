@@ -1,17 +1,43 @@
 import React from 'react';
-import {Container, BillDescription, BillAmount} from './styles';
+import { View } from 'react-native';
+import {
+    Container,
+    BillDescription,
+    BillAmount,
+    BillTitle,
+    ContentDetails,
+} from './styles';
 
 interface BillProps {
     description: string;
+    client?: string;
     amount: number;
     paid: boolean;
 }
 
-export function Bill({description, amount, paid, ...rest}: BillProps) {
+export function Bill({
+    description,
+    client,
+    amount,
+    paid,
+    ...rest
+}: BillProps) {
     return (
         <Container {...rest}>
-            <BillDescription>{description}</BillDescription>
-            <BillAmount paid={paid}>R$ {amount}</BillAmount>
+            <ContentDetails>
+                <BillTitle numberOfLines={1}>{description}</BillTitle>
+                {client && (
+                    <BillDescription numberOfLines={1}>
+                        {client}
+                    </BillDescription>
+                )}
+            </ContentDetails>
+            <BillAmount paid={paid}>
+                {amount.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                })}
+            </BillAmount>
         </Container>
     );
 }

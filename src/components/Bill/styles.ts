@@ -1,5 +1,5 @@
-import {RFValue} from 'react-native-responsive-fontsize';
-import {TextProps} from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
+import { TextProps, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 
 interface AmountTextProps extends TextProps {
@@ -15,17 +15,29 @@ export const Container = styled.View`
     padding: 16px;
     border-radius: 10px;
     border: 1px solid;
+    gap: 4px;
 
-    background-color: ${({theme}) => theme.colors.background_secondary};
+    background-color: ${({ theme }) => theme.colors.background_secondary};
+`;
+
+export const ContentDetails = styled.View`
+    flex: 1;
+`;
+
+export const BillTitle = styled.Text`
+    font-size: ${RFValue(18)}px;
+    color: ${({ theme }) => theme.colors.text};
+    max-width: 90%;
 `;
 
 export const BillDescription = styled.Text`
-    font-size: ${RFValue(18)}px;
-    color: ${({theme}) => theme.colors.text};
+    flex: 1;
+    font-size: ${RFValue(14)}px;
+    color: ${({ theme }) => theme.colors.text_details};
 `;
 
 export const BillAmount = styled.Text<AmountTextProps>`
     font-size: ${RFValue(18)}px;
-    color: ${({theme, paid}) =>
+    color: ${({ theme, paid }) =>
         paid ? theme.colors.success : theme.colors.danger};
 `;
