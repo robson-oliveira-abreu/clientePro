@@ -1,102 +1,63 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, ListRenderItemInfo } from 'react-native';
+import React from 'react';
+import { FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { BackButton } from '../../components/BackButton/BackButton';
-
-import {
-    Container,
-    HeaderButtons,
-    Header,
-    Content,
-    EditButton,
-    TitleName,
-    ClientInfo,
-    ContentTitle,
-} from './styles';
-import { Bill } from '../../components/Bill/Bill';
-import { useTheme } from 'styled-components/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import firestore, {
-    FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
-
-import { RootStackParamList } from '../../routes/app.stack.routes';
 import { AddButton } from '../../components/AddButton/AddButton';
-import { isEqual } from 'lodash';
-import { BillType } from '../../types/BillType';
+import { Bill } from '../../components/Bill/Bill';
 
-type ClientScreenProps = NativeStackScreenProps<RootStackParamList, 'Client'>;
+import { useClientScreen } from './useClientScreen';
+import { useTheme } from 'styled-components/native';
 
-export function Client({ route, navigation }: ClientScreenProps) {
-    const { client } = route.params;
-    const [bills, setBills] = useState<Partial<BillType>[]>([]);
+import { ClientNavigationProps } from './types';
 
+import * as S from './styles';
+
+export function Client({ route, navigation }: ClientNavigationProps) {
     const theme = useTheme();
-    const renderBill = ({
-        item,
-    }: ListRenderItemInfo<FirebaseFirestoreTypes.DocumentData>) => {
-        return (
-            <Bill
-                description={item.description}
-                amount={item.amount}
-                paid={item.paid}
-            />
-        );
-    };
-
-    useEffect(() => {
-        if (!client.document) {
-            return;
-        }
-        const subscriber = firestore()
-            .collection('bills')
-            .where('clientId', '==', client.id)
-            .onSnapshot(documentSnapshot => {
-                const newBills = documentSnapshot.docs.map(doc => doc.data());
-                if (!isEqual(newBills, bills)) {
-                    setBills(newBills);
-                }
-            });
-
-        // Stop listening for updates when no longer required
-        return () => subscriber();
-    }, [client.document, bills]);
+    const { client } = route.params;
+    const { bills } = useClientScreen({ client });
 
     return (
-        <Container>
-            <HeaderButtons>
+        <S.Container>
+            <S.HeaderButtons>
                 <BackButton size={30} />
-                <EditButton>
+                <S.EditButton>
                     <Icon
                         name="more-vertical"
                         size={30}
                         color={theme.colors.text}
                     />
-                </EditButton>
-            </HeaderButtons>
+                </S.EditButton>
+            </S.HeaderButtons>
 
-            <Header>
-                <TitleName>{client?.name}</TitleName>
-                <ClientInfo>Responsavel: {client?.responsible}</ClientInfo>
-                <ClientInfo>Telefone: {client?.phone}</ClientInfo>
-                <ClientInfo>
+            <S.Header>
+                <S.TitleName>{client.name}</S.TitleName>
+                <S.ClientInfo>Responsavel: {client.responsible}</S.ClientInfo>
+                <S.ClientInfo>Telefone: {client.phone}</S.ClientInfo>
+                <S.ClientInfo>
                     {client.clientType === 'PJ' ? 'CNPJ:' : 'CPF:'}{' '}
-                    {client?.document}
-                </ClientInfo>
-                <ClientInfo>Endereço: {client?.address}</ClientInfo>
-            </Header>
-            <ContentTitle>Historico</ContentTitle>
-            <Content>
+                    {client.document}
+                </S.ClientInfo>
+                <S.ClientInfo>Endereço: {client.address}</S.ClientInfo>
+            </S.Header>
+            <S.ContentTitle>Historico</S.ContentTitle>
+            <S.Content>
                 <FlatList
                     data={bills}
-                    keyExtractor={bill => bill.id!}
-                    renderItem={renderBill}
+                    keyExtractor={bill => bill.id}
+                    renderItem={({ item }) => (
+                        <Bill
+                            description={item.description}
+                            amount={item.amount}
+                            paid={item.paid}
+                        />
+                    )}
+                    showsVerticalScrollIndicator={false}
                 />
-            </Content>
+            </S.Content>
             <AddButton
                 onPress={() => navigation.navigate('AddBills', { client })}
             />
-        </Container>
+        </S.Container>
     );
 }

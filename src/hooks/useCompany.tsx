@@ -5,16 +5,14 @@ import firestore, {
 } from '@react-native-firebase/firestore';
 import { AuthContext } from '../context/AuthContext/AuthContext';
 
-export interface ICompany extends FirebaseFirestoreTypes.DocumentData  {
+export interface ICompany extends FirebaseFirestoreTypes.DocumentData {
     name?: string;
     owner?: string;
     id?: string;
-};
+}
 
 export function useCompany() {
-    const [company, setCompany] = useState<
-        ICompany | null | undefined
-    >(null);
+    const [company, setCompany] = useState<ICompany | null | undefined>(null);
     const auth = useContext(AuthContext);
 
     const [initializing, setInitializing] = useState(true);
@@ -23,26 +21,18 @@ export function useCompany() {
         if (!auth.user?.uid) {
             return;
         }
-        firestore()
-            .collection('companies')
-            .doc(auth.user.uid)
-            .set({
-                name: companyName,
-                owner: name,
-                id: auth.user.uid,
-            })
-            .then(() => {
-                firestore()
-                    .collection('companies')
-                    .doc(auth.user?.uid)
-                    .get()
-                    .then(res => {
-                        const newState = res.data();
-                        if (newState) {
-                            setCompany(newState);
-                        }
-                    });
-            });
+
+        setCompany({
+            name: companyName,
+            owner: name,
+            id: auth.user!.uid,
+        });
+
+        firestore().collection('companies').doc(auth.user.uid).set({
+            name: companyName,
+            owner: name,
+            id: auth.user.uid,
+        });
     }
 
     useEffect(() => {

@@ -1,49 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { AvatarLogo } from '../../components/AvatarLogo/AvatarLogo';
 import { Button } from '../../components/Button/button';
 import { Input } from '../../components/Input/Input';
 
 import { Container, Header, Form, Footer } from './styles';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackAuthParamList } from '../../routes/auth.stack.routes';
-import { useAuth } from '../../hooks/useAuth';
-import { Alert } from 'react-native';
 
-type SignupScreenProps = NativeStackScreenProps<
-    RootStackAuthParamList,
-    'Signup'
->;
+import { SignupScreenProps } from './types';
+import { useSignupScreen } from './useSignupScreen';
 
 export function Signup({ navigation }: SignupScreenProps) {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const auth = useAuth();
-
-    async function handleSignup() {
-        if (!email || !password || !confirmPassword) {
-            Alert.alert('Cadastro', 'Preencha todos os campos.');
-            return;
-        }
-
-        if (!email.includes('@') || password.length < 8) {
-            Alert.alert('Cadastro', 'Insira um email valido.');
-            return;
-        }
-
-        if (password.length < 6) {
-            Alert.alert('Cadastro', 'Senhas devem conter 6 ou mais digitos.');
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            Alert.alert('Cadastro', 'Senhas não estão iguais');
-            return;
-        }
-
-        auth.signup(email, password);
-    };
-
+    const {
+        email,
+        setEmail,
+        password,
+        setPassword,
+        confirmPassword,
+        setConfirmPassword,
+        handleSignup
+    } = useSignupScreen();
     return (
         <Container>
             <Header>

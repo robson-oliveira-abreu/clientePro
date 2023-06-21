@@ -1,157 +1,84 @@
-import React, { useState, useContext } from 'react';
-import { useForm, useController, FieldValues, Control } from 'react-hook-form';
-import { useNavigation } from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 
 import { BackButton } from '../../components/BackButton/BackButton';
 import { Button } from '../../components/Button/button';
-import { Input } from '../../components/Input/Input';
-import {
-    Container,
-    Header,
-    Content,
-    SelectType,
-    SelectButton,
-    TextSelect,
-    ButtonWrapper,
-} from './styles';
-import { AuthContext } from '../../context/AuthContext/AuthContext';
+import { useAddClientScreen } from './useAddClientScreen';
 
-interface InputFormPops {
-    placeHolder: string;
-    name: string;
-    control: Control<FieldValues, any> | undefined;
-    keyboardType?: 'numeric' | 'email-address' | 'default';
-}
-
-const InputForm = ({
-    placeHolder,
-    name,
-    control,
-    keyboardType = 'default',
-}: InputFormPops) => {
-    const { field } = useController({
-        control,
-        defaultValue: '',
-        rules: {
-            required: true,
-        },
-        name,
-    });
-    return (
-        <Input
-            value={field.value}
-            placeholder={placeHolder}
-            onChangeText={field.onChange}
-            keyboardType={keyboardType}
-        />
-    );
-};
+import * as S from './styles';
+import { InputForm } from '../../components/InputForm/InputForm';
 
 export function AddClient() {
-    const [clientType, setCLientType] = useState<'PJ' | 'PF'>('PJ');
-    const navigation = useNavigation();
     const { control, handleSubmit } = useForm();
-    const { user } = useContext(AuthContext);
-
-    const onSubmit = (data: any) => {
-        const newClient = {
-            ...data,
-            clientType,
-        };
-        let docExists = false;
-
-        firestore()
-            .collection('companies')
-            .doc(user?.uid)
-            .collection('clients')
-            .doc(newClient.document)
-            .get()
-            .then(doc => {
-                if (doc.exists) {
-                    docExists = true;
-                }
-            });
-
-        if (!docExists) {
-            firestore()
-                .collection('companies')
-                .doc(user?.uid)
-                .collection('clients')
-                .add(newClient)
-                .then(docRef => {
-                    docRef.update({ id: docRef.id });
-                    navigation.goBack();
-                });
-        }
-    };
+    const { onSubmit, handleGoBack, clientType, setCLientType } =
+        useAddClientScreen();
 
     return (
-        <Container>
-            <Header>
-                <BackButton size={30} onPress={() => navigation.goBack()} />
-            </Header>
-            <Content>
-                <SelectType>
-                    <SelectButton
+        <S.Container>
+            <S.Header>
+                <BackButton size={30} onPress={handleGoBack} />
+            </S.Header>
+            <S.Content>
+                <S.SelectType>
+                    <S.SelectButton
                         isActive={clientType === 'PJ'}
                         onPress={() => {
                             setCLientType('PJ');
                         }}
                     >
-                        <TextSelect>PJ</TextSelect>
-                    </SelectButton>
-                    <SelectButton
+                        <S.TextSelect>PJ</S.TextSelect>
+                    </S.SelectButton>
+                    <S.SelectButton
                         isActive={clientType === 'PF'}
                         onPress={() => {
                             setCLientType('PF');
                         }}
                     >
-                        <TextSelect>Pessoa Fisica</TextSelect>
-                    </SelectButton>
-                </SelectType>
+                        <S.TextSelect>Pessoa Fisica</S.TextSelect>
+                    </S.SelectButton>
+                </S.SelectType>
                 <InputForm
                     name="name"
-                    placeHolder={
+                    placeholder={
                         clientType === 'PJ' ? 'Nome Fantasia' : 'Nome Cliente'
                     }
                     control={control}
                 />
                 <InputForm
                     name="responsible"
-                    placeHolder="Nome Responsavel"
+                    placeholder="Nome Responsavel"
                     control={control}
                 />
                 <InputForm
                     name="document"
-                    placeHolder={clientType === 'PJ' ? 'CNPJ' : 'CPF'}
+                    placeholder={clientType === 'PJ' ? 'CNPJ' : 'CPF'}
                     control={control}
                     keyboardType="numeric"
                 />
                 <InputForm
                     name="email"
-                    placeHolder="Email"
+                    placeholder="Email"
                     control={control}
                     keyboardType="email-address"
                 />
                 <InputForm
                     name="phone"
-                    placeHolder="Telefone"
+                    placeholder="Telefone"
                     control={control}
                     keyboardType="numeric"
                 />
                 <InputForm
                     name="address"
-                    placeHolder="Endereço"
+                    placeholder="Endereço"
                     control={control}
                 />
-                <ButtonWrapper>
+                <S.ButtonWrapper>
                     <Button
                         title="Cadastrar"
                         onPress={handleSubmit(onSubmit)}
                     />
-                </ButtonWrapper>
-            </Content>
-        </Container>
+                </S.ButtonWrapper>
+            </S.Content>
+        </S.Container>
     );
 }

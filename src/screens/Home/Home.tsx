@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import {
     Modal,
     FlatList,
@@ -10,118 +10,45 @@ import { OptionsHomeModal } from '../../components/OptionsHomeModal/OptionsHomeM
 
 import { Bill } from '../../components/Bill/Bill';
 import { useTheme } from 'styled-components/native';
-import { AuthContext } from '../../context/AuthContext/AuthContext';
 import { CompanyData } from '../CompanyData/CompanyData';
-
-import firestore, {
-    FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage';
-import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
 import { FormatCurrencyBRL } from '../../utils/FormatCurrencyBRL';
 
-import {
-    Container,
-    Header,
-    HomeTitle,
-    OptionsButton,
-    HeaderTop,
-    HeaderContent,
-    ContentValues,
-    Amount,
-    AmountReceived,
-    AmountReceivable,
-    Content,
-    ContentTitle,
-    Initializing,
-} from './styles';
+import { useHomeScreen } from './useHomeScreen';
+import { Bill as BillType } from '../../types/Bill';
 
-interface IBills extends FirebaseFirestoreTypes.DocumentData {
-    id?: number;
-    clientId?: number;
-    clientName?: string;
-    description?: string;
-    amount?: number;
-    paid?: boolean;
-}
-interface ITotalsState {
-    totalIncome: number;
-    totalMissing: number;
-    totalReceived: number;
-}
-
-const renderBill = ({ item }: ListRenderItemInfo<IBills>) => {
-    return (
-        <Bill
-            description={item.description!}
-            client={item.clientName}
-            amount={item.amount!}
-            paid={item.paid!}
-        />
-    );
-};
+import * as S from './styles';
 
 export function Home() {
-    const auth = useContext(AuthContext);
-    const { company, initializing: initializingCompany } =
-        useContext(CompanyContext);
     const theme = useTheme();
-
-    const [bills, setBills] = useState<Array<IBills>>([]);
-    const [optionsModal, setOptionsModal] = useState(false);
-    const unPaidBills = useMemo(() => bills.filter(bill => !bill.paid), [bills]);
-    const totals = getHomeTotals();
-
-    function getHomeTotals() {
-        const totalIncome = bills.reduce(
-            (total, bill) => total + bill?.amount!,
-            0,
-        );
-
-        let totalReceived = 0;
-        let totalMissing = 0;
-
-        bills.forEach(bill => {
-            if (bill?.paid) {
-                totalReceived += bill?.amount!;
-            } else {
-                totalMissing += bill?.amount!;
-            }
-        });
-
-        return {
-            totalIncome,
-            totalReceived,
-            totalMissing,
-        };
-    }
-
-    useEffect(() => {
-        const companyId = company?.id;
-        if (!companyId) {
-            return;
-        }
-        const subscriber = firestore()
-            .collection('bills')
-            .where('companyId', '==', company?.id)
-            .onSnapshot(data => {
-                return setBills(data.docs.map(doc => doc.data()));
-            });
-
-        return () => subscriber();
-    }, [company?.id]);
+    const {
+        auth,
+        unPaidBills,
+        company,
+        setOptionsModal,
+        totals,
+        optionsModal,
+        initializingCompany,
+    } = useHomeScreen();
 
     return (
-        <Container>
-            <Content>
+        <S.Container>
+            <S.Content>
                 <FlatList
                     data={unPaidBills}
-                    renderItem={renderBill}
+                    renderItem={({ item }: ListRenderItemInfo<BillType>) => (
+                        <Bill
+                            description={item.description!}
+                            client={item.clientName}
+                            amount={item.amount!}
+                            paid={item.paid!}
+                        />
+                    )}
                     ListHeaderComponent={
-                        <Header>
-                            <HeaderTop>
-                                <HomeTitle>{company?.name!}</HomeTitle>
-                                <OptionsButton
+                        <S.Header>
+                            <S.HeaderTop>
+                                <S.HomeTitle>{company?.name!}</S.HomeTitle>
+                                <S.OptionsButton
                                     onPress={() => {
                                         setOptionsModal(true);
                                     }}
@@ -131,31 +58,32 @@ export function Home() {
                                         size={30}
                                         color={theme.colors.text}
                                     />
-                                </OptionsButton>
-                            </HeaderTop>
-                            <HeaderContent>
+                                </S.OptionsButton>
+                            </S.HeaderTop>
+                            <S.HeaderContent>
                                 <ProfileImage size={120} />
-                                <ContentValues>
-                                    <Amount>
+                                <S.ContentValues>
+                                    <S.Amount>
                                         {FormatCurrencyBRL(totals.totalIncome)}
-                                    </Amount>
-                                    <AmountReceived>
+                                    </S.Amount>
+                                    <S.AmountReceived>
                                         {FormatCurrencyBRL(
                                             totals.totalReceived,
                                         )}
-                                    </AmountReceived>
-                                    <AmountReceivable>
+                                    </S.AmountReceived>
+                                    <S.AmountReceivable>
                                         {FormatCurrencyBRL(totals.totalMissing)}
-                                    </AmountReceivable>
-                                </ContentValues>
-                            </HeaderContent>
-                            <ContentTitle>A Receber</ContentTitle>
-                        </Header>
+                                    </S.AmountReceivable>
+                                </S.ContentValues>
+                            </S.HeaderContent>
+                            <S.ContentTitle>A Receber</S.ContentTitle>
+                        </S.Header>
                     }
+                    showsVerticalScrollIndicator={false}
                     stickyHeaderIndices={[0]}
                     stickyHeaderHiddenOnScroll
                 />
-            </Content>
+            </S.Content>
 
             <Modal
                 visible={optionsModal}
@@ -176,10 +104,10 @@ export function Home() {
             </Modal>
 
             <Modal visible={initializingCompany} transparent>
-                <Initializing>
+                <S.Initializing>
                     <ActivityIndicator size={'large'} />
-                </Initializing>
+                </S.Initializing>
             </Modal>
-        </Container>
+        </S.Container>
     );
 }

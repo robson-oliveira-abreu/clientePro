@@ -1,25 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import { Button } from '../../components/Button/button';
 import { Input } from '../../components/Input/Input';
 import { ProfileImage } from '../../components/ProfileImage/ProfileImage';
-import { Container } from './styles';
-import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
+import * as S from './styles';
+import { useCompanyDataScreen } from './useCompanyDataScreen';
 
 export function CompanyData() {
-    const [companyName, setCompanyName] = useState('');
-    const [name, setName] = useState('');
-
-    const company = useContext(CompanyContext);
-
-    const handleSaveCompany = () => {
-        if (!companyName && !name) {
-            return;
-        }
-        company.handleSaveCompany(companyName, name);
-    };
-
+    const { companyName, name, setName, handleSaveCompany, setCompanyName } =
+        useCompanyDataScreen();
     return (
-        <Container>
+        <S.Container>
             <ProfileImage size={150} />
             <Input
                 placeholder="Nome da Empresa"
@@ -32,6 +22,6 @@ export function CompanyData() {
                 style={{ marginTop: 40 }}
                 onPress={handleSaveCompany}
             />
-        </Container>
+        </S.Container>
     );
 }
