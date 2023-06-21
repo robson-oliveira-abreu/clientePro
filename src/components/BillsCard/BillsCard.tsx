@@ -1,5 +1,5 @@
 import React from 'react';
-import { BillType } from '../../types/BillType';
+import { Bill } from '../../types/Bill';
 import {
     Container,
     Title,
@@ -11,7 +11,7 @@ import {
 } from './styels';
 
 type IBillsCard = {
-    bills: BillType[];
+    bills: Bill[];
 };
 
 export function BillsCard({ bills }: IBillsCard) {

@@ -5,24 +5,13 @@ import { AddClient } from '../screens/AddClient/AddClient';
 import { AppTabRoutes } from './app.tab.routes';
 import { Client } from '../screens/Client/Client';
 import { AddBills } from '../screens/AddBills/AddBills';
-
-export interface ClientProps {
-    id: string;
-    address: string;
-    clientType: 'PJ' | 'PF';
-    document: number;
-    email: string;
-    name: string;
-    phone: string;
-    res: string;
-    responsible: string;
-}
+import { Client as ClientType } from '../types/Client';
 
 export type RootStackParamList = {
     HomeTab: undefined;
     AddClient: undefined;
-    AddBills: { client: ClientProps };
-    Client: { client: ClientProps };
+    AddBills: { client: ClientType };
+    Client: { client: ClientType };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
