@@ -6,7 +6,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { OptionsHomeModal } from '../../components/OptionsHomeModal/OptionsHomeModal';
+import { OptionsHomeModal } from './components/OptionsHomeModal/OptionsHomeModal';
 
 import { Bill } from '../../components/Bill/Bill';
 import { useTheme } from 'styled-components/native';
@@ -18,41 +18,64 @@ import { useHomeScreen } from './useHomeScreen';
 import { Bill as BillType } from '../../types/Bill';
 
 import * as S from './styles';
+import BottomSheet, {
+    BottomSheetBackdrop,
+    BottomSheetBackdropProps,
+} from '@gorhom/bottom-sheet';
+import Animated, { Easing, SlideInRight } from 'react-native-reanimated';
 
 export function Home() {
     const theme = useTheme();
     const {
-        auth,
+        isAuth,
         unPaidBills,
         company,
-        setOptionsModal,
         totals,
-        optionsModal,
         initializingCompany,
+        bottomSheetRef,
+        snapPoints,
+        loading,
+        handleOpenOptions,
+        handleSheetChanges,
+        handleCloseOptions,
     } = useHomeScreen();
+
+    const renderBackdrop = React.useCallback(
+        (props: BottomSheetBackdropProps) => (
+            <BottomSheetBackdrop
+                {...props}
+                disappearsOnIndex={0}
+                appearsOnIndex={1}
+                onPress={handleCloseOptions}
+            />
+        ),
+        [],
+    );
+
+    const renderItem = ({ item, index }: ListRenderItemInfo<BillType>) => (
+        <Animated.View
+            entering={SlideInRight.delay(50 * (index > 10 ? 10 : index + 1))}
+        >
+            <Bill
+                description={item.description!}
+                client={item.clientName}
+                amount={item.amount!}
+                paid={item.paid!}
+            />
+        </Animated.View>
+    );
 
     return (
         <S.Container>
             <S.Content>
                 <FlatList
                     data={unPaidBills}
-                    renderItem={({ item }: ListRenderItemInfo<BillType>) => (
-                        <Bill
-                            description={item.description!}
-                            client={item.clientName}
-                            amount={item.amount!}
-                            paid={item.paid!}
-                        />
-                    )}
+                    renderItem={renderItem}
                     ListHeaderComponent={
                         <S.Header>
                             <S.HeaderTop>
                                 <S.HomeTitle>{company?.name!}</S.HomeTitle>
-                                <S.OptionsButton
-                                    onPress={() => {
-                                        setOptionsModal(true);
-                                    }}
-                                >
+                                <S.OptionsButton onPress={handleOpenOptions}>
                                     <Icon
                                         name="more-vertical"
                                         size={30}
@@ -64,15 +87,13 @@ export function Home() {
                                 <ProfileImage size={120} />
                                 <S.ContentValues>
                                     <S.Amount>
-                                        {FormatCurrencyBRL(totals.totalIncome)}
+                                        {FormatCurrencyBRL(totals.income)}
                                     </S.Amount>
                                     <S.AmountReceived>
-                                        {FormatCurrencyBRL(
-                                            totals.totalReceived,
-                                        )}
+                                        {FormatCurrencyBRL(totals.received)}
                                     </S.AmountReceived>
                                     <S.AmountReceivable>
-                                        {FormatCurrencyBRL(totals.totalMissing)}
+                                        {FormatCurrencyBRL(totals.missing)}
                                     </S.AmountReceivable>
                                 </S.ContentValues>
                             </S.HeaderContent>
@@ -82,22 +103,37 @@ export function Home() {
                     showsVerticalScrollIndicator={false}
                     stickyHeaderIndices={[0]}
                     stickyHeaderHiddenOnScroll
+                    ListEmptyComponent={
+                        loading ? (
+                            <S.Initializing>
+                                <ActivityIndicator
+                                    size={'large'}
+                                    color={theme.colors.main}
+                                />
+                            </S.Initializing>
+                        ) : (
+                            <></>
+                        )
+                    }
                 />
             </S.Content>
 
-            <Modal
-                visible={optionsModal}
-                onRequestClose={() => setOptionsModal(false)}
-                transparent
-                animationType="slide"
+            <BottomSheet
+                ref={bottomSheetRef}
+                index={0}
+                snapPoints={snapPoints}
+                onChange={handleSheetChanges}
+                enablePanDownToClose={true}
+                backgroundStyle={{
+                    backgroundColor: theme.colors.background_secondary,
+                }}
+                backdropComponent={renderBackdrop}
             >
-                <OptionsHomeModal handleClose={() => setOptionsModal(false)} />
-            </Modal>
+                <OptionsHomeModal />
+            </BottomSheet>
 
             <Modal
-                visible={
-                    !!auth.user?.uid && !company?.name && !initializingCompany
-                }
+                visible={isAuth && !company?.name && !initializingCompany}
                 animationType="slide"
             >
                 <CompanyData />
@@ -105,7 +141,10 @@ export function Home() {
 
             <Modal visible={initializingCompany} transparent>
                 <S.Initializing>
-                    <ActivityIndicator size={'large'} />
+                    <ActivityIndicator
+                        size={'large'}
+                        color={theme.colors.main}
+                    />
                 </S.Initializing>
             </Modal>
         </S.Container>

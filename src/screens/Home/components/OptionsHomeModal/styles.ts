@@ -4,12 +4,8 @@ import styled from 'styled-components/native';
 export const Container = styled.View`
     flex: 1;
 `;
-export const TouchableClose = styled.TouchableOpacity`
-    flex: 1;
-    z-index: 9;
-`;
 export const Content = styled.View`
-    background-color: ${({theme}) => theme.colors.shape_dark};
+    background-color: ${({theme}) => theme.colors.background_secondary};
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     padding: 8px 20px 32px;

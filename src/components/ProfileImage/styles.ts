@@ -5,8 +5,8 @@ export const Container = styled.TouchableWithoutFeedback`
 `;
 
 export const ImageWrapper = styled.View`
-    border: 2px solid ${({ theme }) => theme.colors.main};
-    margin: 20px 0;
+    border: 1px solid ${({ theme }) => theme.colors.main};
+    margin: 10px 0;
     overflow: hidden;
 `;
 

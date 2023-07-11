@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo } from 'react';
 import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
 import { AuthContext } from '../../context/AuthContext/AuthContext';
 import { listenClients } from './services';
@@ -12,9 +12,9 @@ export function useClientsListScreen() {
 
     const { user } = useContext(AuthContext);
 
-    const filteredClints: Client[] = clients?.filter(client =>
+    const filteredClients: Client[] = useMemo(() => clients?.filter(client =>
         client?.name?.toLowerCase().includes(filterValue.toLowerCase()),
-    );
+    ),[clients, filterValue])
 
     useEffect(() => {
         if (!company?.id) {
@@ -31,8 +31,7 @@ export function useClientsListScreen() {
     }, [clients, user]);
 
     return {
-        clients,
-        filteredClints,
+        clients: filteredClients,
         filterValue,
         setFilterValue,
     };

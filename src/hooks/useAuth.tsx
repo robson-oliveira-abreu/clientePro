@@ -5,6 +5,7 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 export function useAuth() {
     const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+    const isAuth = !!user?.uid;
 
     const [initializing, setInitializing] = useState(true);
 
@@ -47,5 +48,5 @@ export function useAuth() {
         return () => unsubscribe();
     }, [initializing]);
 
-    return { user, initializing, signup, signin };
+    return { user, isAuth, initializing, signup, signin };
 }

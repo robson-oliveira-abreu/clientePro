@@ -17,8 +17,6 @@ export const Title = styled.Text`
     margin: 20px 0 10px;
 `;
 
-export const ContentList = styled.FlatList``;
-
 export const CardCLient = styled.TouchableOpacity`
     width: 100%;
     height: 60px;

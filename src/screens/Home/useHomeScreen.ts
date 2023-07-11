@@ -1,45 +1,60 @@
-import { useEffect, useContext, useState, useMemo } from 'react';
+import { useEffect, useContext, useState, useMemo, useRef, useCallback } from 'react';
 import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
 import { AuthContext } from '../../context/AuthContext/AuthContext';
 import { listenBills } from './services';
 import { Bill } from '../../types/Bill';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { useIsFocused } from '@react-navigation/native';
 
 export function useHomeScreen() {
-    const auth = useContext(AuthContext);
-    const { company, initializing: initializingCompany } =
-        useContext(CompanyContext);
-
+    const { isAuth } = useContext(AuthContext);
+    const { company, initializing } = useContext(CompanyContext);
     const [bills, setBills] = useState<Array<Bill>>([]);
-    const [optionsModal, setOptionsModal] = useState(false);
-    const unPaidBills = useMemo(
-        () => bills.filter(bill => !bill.paid),
-        [bills],
-    );
+    const [loading, setLoading] = useState(true);
+    const focus = useIsFocused();
+
+    const unPaidBills = useMemo(() => bills.filter(b => !b.paid), [bills]);
+
+    const bottomSheetRef = useRef<BottomSheet>(null);
+
+    const snapPoints = useMemo(() => [1, '30%'], []);
+
     const totals = getHomeTotals();
 
     function getHomeTotals() {
-        const totalIncome = bills.reduce(
-            (total, bill) => total + bill?.amount!,
-            0,
-        );
-
-        let totalReceived = 0;
-        let totalMissing = 0;
+        const income = bills.reduce((total, bill) => total + bill?.amount!, 0);
+        let received = 0;
+        let missing = 0;
 
         bills.forEach(bill => {
             if (bill?.paid) {
-                totalReceived += bill?.amount!;
-            } else {
-                totalMissing += bill?.amount!;
+                return received += bill?.amount!;
             }
+            missing += bill?.amount!;
         });
 
-        return {
-            totalIncome,
-            totalReceived,
-            totalMissing,
-        };
+        return { income, received, missing, };
     }
+
+    function handleOpenOptions() {
+        bottomSheetRef.current?.expand();
+    }
+
+    function handleCloseOptions() {
+        bottomSheetRef.current?.close();
+    }
+
+    const handleSheetChanges = useCallback((index: number) => {
+        if (index === 0) {
+            handleCloseOptions();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!focus) {
+            return handleCloseOptions();
+        }
+    }, [focus]);
 
     useEffect(() => {
         const companyId = company?.id;
@@ -47,18 +62,26 @@ export function useHomeScreen() {
             return;
         }
 
-        const subscriber = listenBills(companyId, docs => setBills(docs));
+        const subscriber = listenBills(companyId, docs => {
+            setLoading(false);
+            setBills(docs)
+        }
+        );
 
         return () => subscriber();
     }, [company?.id]);
 
     return {
-        auth,
+        isAuth,
         unPaidBills,
         company,
-        setOptionsModal,
         totals,
-        optionsModal,
-        initializingCompany,
+        initializingCompany: initializing,
+        bottomSheetRef,
+        snapPoints,
+        loading: loading && !!company?.id,
+        handleOpenOptions,
+        handleSheetChanges,
+        handleCloseOptions,
     };
 }

@@ -5,18 +5,18 @@ import Icon from 'react-native-vector-icons/Feather';
 import { useTheme } from 'styled-components/native';
 import { ClientsList } from '../screens/ClientsList/ClientsList';
 import { Home } from '../screens/Home/Home';
-import { ClientProps } from './app.stack.routes';
 import { Bills } from '../screens/Bills/Bills';
 import { Profile } from '../screens/Profile/Profile';
+import { Client } from '../types/Client';
 
 export type RootTabParamList = {
     Home: undefined;
     Clients: undefined;
-    Client: { client: ClientProps };
+    Client: { client: Client };
     Bills: undefined;
     Profile: undefined;
     AddClient: undefined;
-    AddBills: { client: ClientProps };
+    AddBills: { client: Client };
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -52,7 +52,7 @@ export function AppTabRoutes() {
                     display: 'none',
                 },
                 tabBarActiveTintColor: theme.colors.main,
-                tabBarInactiveTintColor: theme.colors.shape,
+                tabBarInactiveTintColor: theme.colors.text_details,
             })}
         >
             <Tab.Screen name="Home" component={Home} />

@@ -7,10 +7,26 @@ import { ClientListNavigationProps } from './types';
 import { useClientsListScreen } from './useClientsListScreen';
 
 import * as S from './styles';
+import Animated, { SlideInRight } from 'react-native-reanimated';
+import { FlatList, ListRenderItemInfo } from 'react-native';
+import { Client } from '../../types/Client';
 
 export function ClientsList({ navigation }: ClientListNavigationProps) {
-    const { clients, filterValue, filteredClints, setFilterValue } =
+    const { filterValue, clients, setFilterValue } =
         useClientsListScreen();
+
+    const renderItem = ({ item, index }: ListRenderItemInfo<Client>) => (
+        <Animated.View
+            entering={SlideInRight.delay(50 * (index > 10 ? 10 : index + 1))}
+        >
+            <S.CardCLient
+                key={item.id}
+                onPress={() => navigation?.navigate('Client', { client: item })}
+            >
+                <S.CardCLientTitle>{item.name}</S.CardCLientTitle>
+            </S.CardCLient>
+        </Animated.View>
+    );
 
     return (
         <S.Container>
@@ -21,18 +37,9 @@ export function ClientsList({ navigation }: ClientListNavigationProps) {
                 />
             </S.Header>
             <S.Title>Clientes</S.Title>
-            <S.ContentList
-                data={filterValue ? filteredClints : clients}
-                renderItem={({ item }: { item: any }) => (
-                    <S.CardCLient
-                        key={item.id}
-                        onPress={() =>
-                            navigation?.navigate('Client', { client: item })
-                        }
-                    >
-                        <S.CardCLientTitle>{item.name}</S.CardCLientTitle>
-                    </S.CardCLient>
-                )}
+            <FlatList
+                data={clients}
+                renderItem={renderItem}
                 keyExtractor={(item: any) => item.document}
             />
             <AddButton onPress={() => navigation?.navigate('AddClient')} />

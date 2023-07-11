@@ -1,13 +1,24 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, ListRenderItemInfo } from 'react-native';
 import { InputSearch } from '../../components/InputSearch/InputSearch';
 import { Container, Title } from './styles';
 import { BillsCard } from '../../components/BillsCard/BillsCard';
 import { AddButton } from '../../components/AddButton/AddButton';
 import { useBillsScreen } from './useBillsScreen';
+import { Bill } from '../../types/Bill';
+import Animated, { SlideInRight } from 'react-native-reanimated';
 
 export function Bills() {
-    const { search, filteredBills, handleAddBill, setSearch } = useBillsScreen();
+    const { search, filteredBills, handleAddBill, setSearch } =
+        useBillsScreen();
+
+    const renderItem = ({ item, index }: ListRenderItemInfo<Array<Bill>>) => (
+        <Animated.View
+            entering={SlideInRight.delay(50 * (index > 10 ? 10 : index + 1))}
+        >
+            <BillsCard bills={item} />
+        </Animated.View>
+    );
 
     return (
         <Container>
@@ -19,7 +30,7 @@ export function Bills() {
                 data={filteredBills}
                 keyExtractor={([item]) => item.clientId!}
                 contentContainerStyle={{ gap: 10 }}
-                renderItem={({ item }) => <BillsCard bills={item} />}
+                renderItem={renderItem}
             />
             <AddButton onPress={handleAddBill} />
         </Container>

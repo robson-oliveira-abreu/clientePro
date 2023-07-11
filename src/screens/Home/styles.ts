@@ -16,7 +16,7 @@ export const HeaderTop = styled.View`
     width: 100%;
     justify-content: space-between;
     flex-direction: row;
-    margin: 20px 0;
+    margin: 10px 0;
 `;
 
 export const HomeTitle = styled.Text`
@@ -66,7 +66,6 @@ export const AmountReceivable = styled.Text`
 
 export const Content = styled.View`
     width: 100%;
-    flex: 1;
 `;
 
 export const ContentTitle = styled.Text`

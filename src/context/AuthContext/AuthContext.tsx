@@ -8,18 +8,20 @@ interface AuthProviderProps {
 
 type AuthContextProps = {
     user: FirebaseAuthTypes.User | null;
+    isAuth: boolean;
     initializing: boolean;
 };
 
 const AuthContext = createContext<AuthContextProps>({
     user: null,
+    isAuth: false,
     initializing: false,
 });
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-    const { user, initializing } = useAuth();
+    const { user, isAuth, initializing } = useAuth();
     return (
-        <AuthContext.Provider value={{ user, initializing }}>
+        <AuthContext.Provider value={{ user, isAuth, initializing }}>
             {children}
         </AuthContext.Provider>
     );
