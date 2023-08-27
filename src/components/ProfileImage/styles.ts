@@ -6,7 +6,6 @@ export const Container = styled.TouchableWithoutFeedback`
 
 export const ImageWrapper = styled.View`
     border: 1px solid ${({ theme }) => theme.colors.main};
-    margin: 10px 0;
     overflow: hidden;
 `;
 

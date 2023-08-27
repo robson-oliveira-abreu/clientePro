@@ -10,19 +10,22 @@ type CompanyContextProps = {
     company: ICompany | null | undefined;
     initializing: boolean;
     handleSaveCompany: (companyName: string, name: string) => void;
+    handleGetCompany: () => void;
 };
 
 const CompanyContext = createContext<CompanyContextProps>({
     company: null,
     initializing: false,
     handleSaveCompany: () => {},
+    handleGetCompany: () => {},
 });
 
 const CompanyProvider = ({ children }: CompanyProviderProps) => {
-    const { company, initializing, handleSaveCompany } = useCompany();
+    const { company, initializing, handleSaveCompany, handleGetCompany } =
+        useCompany();
     return (
         <CompanyContext.Provider
-            value={{ company, initializing, handleSaveCompany }}
+            value={{ company, initializing, handleSaveCompany, handleGetCompany }}
         >
             {children}
         </CompanyContext.Provider>

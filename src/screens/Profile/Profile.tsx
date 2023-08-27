@@ -8,6 +8,7 @@ import BottomSheet, {
 import { useProfile } from './useProfile';
 import { useTheme } from 'styled-components';
 import { EditCompanyData } from './components/EditCompanyData/EditCompanyData';
+import { ProfileImage } from '../../components/ProfileImage/ProfileImage';
 
 export function Profile() {
     const { colors } = useTheme();
@@ -34,11 +35,7 @@ export function Profile() {
         <S.Container>
             <S.Header>
                 <S.ProfileImageWrapper>
-                    <S.ProfileImage
-                        source={{
-                            uri: 'https://github.com/robson-oliveira-abreu.png',
-                        }}
-                    />
+                    <ProfileImage borderWidth={0} size={142} />
                 </S.ProfileImageWrapper>
             </S.Header>
 
