@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useCallback } from 'react';
 
 import firestore, {
     FirebaseFirestoreTypes,
@@ -9,6 +9,7 @@ export interface ICompany extends FirebaseFirestoreTypes.DocumentData {
     name?: string;
     owner?: string;
     id?: string;
+    photo?: string;
 }
 
 export function useCompany() {
@@ -35,11 +36,8 @@ export function useCompany() {
         });
     }
 
-    useEffect(() => {
-        if (company) {
-            setInitializing(false);
-            return;
-        }
+    const handleGetCompany = useCallback(() => {
+        console.log('aqui')
         firestore()
             .collection('companies')
             .doc(auth?.user?.uid)
@@ -50,11 +48,21 @@ export function useCompany() {
                     setInitializing(oldState => !oldState);
                 }
             });
+    }, [auth?.user?.uid, initializing])
+
+    useEffect(() => {
+        if (company) {
+            setInitializing(false);
+            return;
+        }
+        handleGetCompany();
     }, [auth?.user?.uid, initializing, company]);
 
     return {
         company,
         initializing,
         handleSaveCompany,
+        handleGetCompany,
+        setCompany,
     };
 }
