@@ -14,7 +14,7 @@ export function Bills() {
 
     const renderItem = ({ item, index }: ListRenderItemInfo<Array<Bill>>) => (
         <Animated.View
-            entering={SlideInRight.delay(50 * (index > 10 ? 10 : index + 1))}
+            entering={SlideInRight.delay(50 * (index > 10 ? 10 : index))}
         >
             <BillsCard bills={item} />
         </Animated.View>

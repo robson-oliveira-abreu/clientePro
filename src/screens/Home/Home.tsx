@@ -22,7 +22,7 @@ import BottomSheet, {
     BottomSheetBackdrop,
     BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
-import Animated, { Easing, SlideInRight } from 'react-native-reanimated';
+import Animated, { SlideInRight } from 'react-native-reanimated';
 
 export function Home() {
     const theme = useTheme();
@@ -54,7 +54,7 @@ export function Home() {
 
     const renderItem = ({ item, index }: ListRenderItemInfo<BillType>) => (
         <Animated.View
-            entering={SlideInRight.delay(50 * (index > 10 ? 10 : index + 1))}
+            entering={SlideInRight.delay(50 * (index > 10 ? 10 : index))}
         >
             <Bill
                 description={item.description!}
