@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
 import { Alert } from "react-native";
+import { signin } from "../../services/auth/signin";
 
 export function useSigninScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const auth = useAuth();
 
     const handleSignin = () => {
         if (!email || !password) {
@@ -18,7 +17,7 @@ export function useSigninScreen() {
             return;
         }
 
-        auth.signin(email, password);
+        signin(email, password);
     };
 
     return {

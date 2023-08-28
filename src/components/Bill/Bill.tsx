@@ -1,19 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
-import {
-    Container,
-    BillDescription,
-    BillAmount,
-    BillTitle,
-    ContentDetails,
-} from './styles';
-
-interface BillProps {
-    description: string;
-    client?: string;
-    amount: number;
-    paid: boolean;
-}
+import * as S from './styles';
+import { BillProps } from './types/billProps';
 
 export function Bill({
     description,
@@ -23,21 +10,21 @@ export function Bill({
     ...rest
 }: BillProps) {
     return (
-        <Container {...rest}>
-            <ContentDetails>
-                <BillTitle numberOfLines={1}>{description}</BillTitle>
+        <S.Container {...rest}>
+            <S.ContentDetails>
+                <S.BillTitle numberOfLines={1}>{description}</S.BillTitle>
                 {client && (
-                    <BillDescription numberOfLines={1}>
+                    <S.BillDescription numberOfLines={1}>
                         {client}
-                    </BillDescription>
+                    </S.BillDescription>
                 )}
-            </ContentDetails>
-            <BillAmount paid={paid}>
+            </S.ContentDetails>
+            <S.BillAmount paid={paid}>
                 {amount.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL',
                 })}
-            </BillAmount>
-        </Container>
+            </S.BillAmount>
+        </S.Container>
     );
 }

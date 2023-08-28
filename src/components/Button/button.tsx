@@ -1,12 +1,7 @@
 import React from 'react';
-import { TouchableOpacityProps, ActivityIndicator } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { Container, Title } from './styles';
-
-interface ButtonProps extends TouchableOpacityProps {
-    title: string;
-    transparent?: boolean;
-    isLoading?: boolean;
-}
+import { ButtonProps } from './types/buttonProps';
 
 export function Button({
     title = '',
@@ -16,11 +11,8 @@ export function Button({
 }: ButtonProps) {
     return (
         <Container transparent={transparent} disabled={isLoading} {...rest}>
-            {isLoading ? (
-                <ActivityIndicator size={30} color="#fff" />
-            ) : (
-                <Title>{title}</Title>
-            )}
+            {!!isLoading && <ActivityIndicator size={30} color="#fff" />}
+            {!isLoading && <Title>{title}</Title>}
         </Container>
     );
 }

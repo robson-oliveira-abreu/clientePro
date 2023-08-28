@@ -7,7 +7,7 @@ import { ClientsList } from '../screens/ClientsList/ClientsList';
 import { Home } from '../screens/Home/Home';
 import { Bills } from '../screens/Bills/Bills';
 import { Profile } from '../screens/Profile/Profile';
-import { Client } from '../types/Client';
+import { Client } from '../models/Client';
 
 export type RootTabParamList = {
     Home: undefined;

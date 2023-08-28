@@ -1,10 +1,6 @@
 import { RFValue } from 'react-native-responsive-fontsize';
-import { TextProps, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
-
-interface AmountTextProps extends TextProps {
-    paid: boolean;
-}
+import { AmountTextProps } from './types/amoutTextProps';
 
 export const Container = styled.View`
     width: 100%;

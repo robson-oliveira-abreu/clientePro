@@ -5,8 +5,8 @@ import { Container, Title } from './styles';
 import { BillsCard } from '../../components/BillsCard/BillsCard';
 import { AddButton } from '../../components/AddButton/AddButton';
 import { useBillsScreen } from './useBillsScreen';
-import { Bill } from '../../types/Bill';
 import Animated, { SlideInRight } from 'react-native-reanimated';
+import { Bill } from '../../models/Bill';
 
 export function Bills() {
     const { search, filteredBills, handleAddBill, setSearch } =

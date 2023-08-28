@@ -7,6 +7,7 @@ import { useAddClientScreen } from './useAddClientScreen';
 
 import * as S from './styles';
 import { InputForm } from '../../components/InputForm/InputForm';
+import { ClientTypes } from '../../models/Client';
 
 export function AddClient() {
     const { control, handleSubmit } = useForm();
@@ -21,17 +22,17 @@ export function AddClient() {
             <S.Content>
                 <S.SelectType>
                     <S.SelectButton
-                        isActive={clientType === 'PJ'}
+                        isActive={clientType === ClientTypes.PJ}
                         onPress={() => {
-                            setCLientType('PJ');
+                            setCLientType(ClientTypes.PJ);
                         }}
                     >
                         <S.TextSelect>PJ</S.TextSelect>
                     </S.SelectButton>
                     <S.SelectButton
-                        isActive={clientType === 'PF'}
+                        isActive={clientType === ClientTypes.PF}
                         onPress={() => {
-                            setCLientType('PF');
+                            setCLientType(ClientTypes.PF);
                         }}
                     >
                         <S.TextSelect>Pessoa Fisica</S.TextSelect>
@@ -40,7 +41,7 @@ export function AddClient() {
                 <InputForm
                     name="name"
                     placeholder={
-                        clientType === 'PJ' ? 'Nome Fantasia' : 'Nome Cliente'
+                        clientType === ClientTypes.PJ ? 'Nome Fantasia' : 'Nome Cliente'
                     }
                     control={control}
                 />
@@ -51,7 +52,7 @@ export function AddClient() {
                 />
                 <InputForm
                     name="document"
-                    placeholder={clientType === 'PJ' ? 'CNPJ' : 'CPF'}
+                    placeholder={clientType === ClientTypes.PJ ? 'CNPJ' : 'CPF'}
                     control={control}
                     keyboardType="numeric"
                 />

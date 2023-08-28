@@ -1,49 +1,37 @@
 import React from 'react';
-import { Bill } from '../../types/Bill';
-import {
-    Container,
-    Title,
-    RowContent,
-    Description,
-    Amount,
-    RowContentTitle,
-    AmountTitle,
-} from './styels';
+import * as S from './styels';
+import { BillsCardProps } from './types/billsCardProps';
 
-type IBillsCard = {
-    bills: Bill[];
-};
-
-export function BillsCard({ bills }: IBillsCard) {
+export function BillsCard({ bills }: BillsCardProps) {
     const title = bills[0].clientName;
     const totalAmount = bills.reduce((sum, bill) => sum + bill.amount!, 0);
     
     return (
-        <Container>
-            <RowContentTitle>
-                <Title numberOfLines={1}>{title}</Title>
-                <AmountTitle>
+        <S.Container>
+            <S.RowContentTitle>
+                <S.Title numberOfLines={1}>{title}</S.Title>
+                <S.AmountTitle>
                     {totalAmount.toLocaleString('pt-BR', {
                         style: 'currency',
                         currency: 'BRL',
                     })}
-                </AmountTitle>
-            </RowContentTitle>
+                </S.AmountTitle>
+            </S.RowContentTitle>
             {bills.map(bill => {
                 return (
-                    <RowContent key={bill.id}>
-                        <Description numberOfLines={1}>
+                    <S.RowContent key={bill.id}>
+                        <S.Description numberOfLines={1}>
                             {bill.description}
-                        </Description>
-                        <Amount>
+                        </S.Description>
+                        <S.Amount>
                             {bill.amount!.toLocaleString('pt-BR', {
                                 style: 'currency',
                                 currency: 'BRL',
                             })}
-                        </Amount>
-                    </RowContent>
+                        </S.Amount>
+                    </S.RowContent>
                 );
             })}
-        </Container>
+        </S.Container>
     );
 }

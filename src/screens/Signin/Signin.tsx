@@ -5,10 +5,10 @@ import { Input } from '../../components/Input/Input';
 
 import { Container, Header, Form, Footer } from './styles';
 import { InputPassword } from '../../components/InputPassword/InputPassword';
-import { SigninScreenProps } from './types';
+import { SigninProps } from './types/signinProps';
 import { useSigninScreen } from './useSigninScreen';
 
-export function Signin({ navigation }: SigninScreenProps) {
+export function Signin({ navigation }: SigninProps) {
     const { email, password, setEmail, setPassword, handleSignin } =
         useSigninScreen();
 

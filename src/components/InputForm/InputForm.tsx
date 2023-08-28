@@ -1,7 +1,7 @@
 import React from 'react';
 import { useController } from 'react-hook-form';
 import { Input } from '../Input/Input';
-import { InputFormPops } from './types';
+import { InputFormPops } from './types/inputFormPops';
 
 export function InputForm({
     placeholder,

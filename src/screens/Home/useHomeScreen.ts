@@ -1,10 +1,11 @@
 import { useEffect, useContext, useState, useMemo, useRef, useCallback } from 'react';
 import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
 import { AuthContext } from '../../context/AuthContext/AuthContext';
-import { listenBills } from './services';
-import { Bill } from '../../types/Bill';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useIsFocused } from '@react-navigation/native';
+import { Bill } from '../../models/Bill';
+import { listenBills } from '../../services/bill/listenBillsByClient';
+import { listenBillsByCompany } from '../../services/bill/listenBillsByCompany';
 
 export function useHomeScreen() {
     const { isAuth } = useContext(AuthContext);
@@ -62,7 +63,7 @@ export function useHomeScreen() {
             return;
         }
 
-        const subscriber = listenBills(companyId, docs => {
+        const subscriber = listenBillsByCompany(companyId, docs => {
             setLoading(false);
             setBills(docs)
         }

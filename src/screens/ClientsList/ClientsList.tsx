@@ -3,15 +3,15 @@ import React from 'react';
 import { AddButton } from '../../components/AddButton/AddButton';
 import { InputSearch } from '../../components/InputSearch/InputSearch';
 
-import { ClientListNavigationProps } from './types';
+import { ClientListProps } from './types/clientListProps';
 import { useClientsListScreen } from './useClientsListScreen';
 
 import * as S from './styles';
 import Animated, { SlideInRight } from 'react-native-reanimated';
 import { FlatList, ListRenderItemInfo } from 'react-native';
-import { Client } from '../../types/Client';
+import { Client } from '../../models/Client';
 
-export function ClientsList({ navigation }: ClientListNavigationProps) {
+export function ClientsList({ navigation }: ClientListProps) {
     const { filterValue, clients, setFilterValue } =
         useClientsListScreen();
 

@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState, useMemo } from 'react';
 import { CompanyContext } from '../../context/CompanyContext/CompanyContext';
 import { AuthContext } from '../../context/AuthContext/AuthContext';
-import { listenClients } from './services';
 import { isEqual } from 'lodash';
-import { Client } from '../../types/Client';
+import { Client } from '../../models/Client';
+import { listenClients } from '../../services/client/listenClients';
 
 export function useClientsListScreen() {
     const [clients, setClients] = useState<Client[]>([]);

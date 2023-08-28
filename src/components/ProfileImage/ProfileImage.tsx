@@ -1,16 +1,9 @@
 import React from 'react';
-import { TouchableWithoutFeedbackProps } from 'react-native';
-
 import { Container, Image, ImageWrapper } from './styles';
 import { useProfileImage } from './useProfileImage';
+import { ProfileImageProps } from './types/profileImageProps';
 
 const clientProLogo = require('../../assets/AppLogo.png');
-
-interface ProfileImageProps extends TouchableWithoutFeedbackProps {
-    size: number;
-    borderWidth?: number;
-    seeOnly?: boolean;
-}
 
 export function ProfileImage({
     size,

@@ -1,7 +1,7 @@
 import firestore from "@react-native-firebase/firestore";
-import { Bill } from "../../types/Bill";
+import { Bill } from "../../models/Bill";
 
-export function listenBills(clientId: string, callback: (docs: Bill[]) => void) {
+export const listenBills = (clientId: string, callback: (docs: Bill[]) => void): () => void => {
     return firestore()
         .collection('bills')
         .where('clientId', '==', clientId)

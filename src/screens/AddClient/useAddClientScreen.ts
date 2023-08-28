@@ -1,11 +1,12 @@
 import { useState, useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import { addClient, getClient } from './services';
-import { Client } from '../../types/Client';
+import { Client, ClientTypes } from '../../models/Client';
+import { getClient } from '../../services/client/getClient';
+import { createClient } from '../../services/client/createClient';
 
 export function useAddClientScreen() {
-    const [clientType, setCLientType] = useState<'PJ' | 'PF'>('PJ');
+    const [clientType, setCLientType] = useState<ClientTypes>(ClientTypes.PJ);
     const navigation = useNavigation();
     const { user } = useContext(AuthContext);
 
@@ -18,11 +19,11 @@ export function useAddClientScreen() {
             ...data,
             clientType,
         };
-
+        
         const docExists = await getClient(user?.uid!, newClient.document);
 
         if (!docExists) {
-            await addClient(user?.uid!, newClient)
+            await createClient(user?.uid!, newClient)
             handleGoBack();
         }
     };

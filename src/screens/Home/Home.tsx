@@ -15,7 +15,7 @@ import { ProfileImage } from '../../components/ProfileImage/ProfileImage';
 import { FormatCurrencyBRL } from '../../utils/FormatCurrencyBRL';
 
 import { useHomeScreen } from './useHomeScreen';
-import { Bill as BillType } from '../../types/Bill';
+import { Bill as BillModel } from '../../models/Bill';
 
 import * as S from './styles';
 import BottomSheet, {
@@ -52,7 +52,7 @@ export function Home() {
         [],
     );
 
-    const renderItem = ({ item, index }: ListRenderItemInfo<BillType>) => (
+    const renderItem = ({ item, index }: ListRenderItemInfo<BillModel>) => (
         <Animated.View
             entering={SlideInRight.delay(50 * (index > 10 ? 10 : index))}
         >

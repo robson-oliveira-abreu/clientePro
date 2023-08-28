@@ -1,16 +1,7 @@
-import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import React, { createContext } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-
-interface AuthProviderProps {
-    children: React.ReactElement;
-}
-
-type AuthContextProps = {
-    user: FirebaseAuthTypes.User | null;
-    isAuth: boolean;
-    initializing: boolean;
-};
+import { AuthContextProps } from './types/authContextProps';
+import { AuthProviderProps } from './types/authProviderProps';
 
 const AuthContext = createContext<AuthContextProps>({
     user: null,

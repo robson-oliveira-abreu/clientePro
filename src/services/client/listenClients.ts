@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
-import { Client } from '../../types/Client';
+import { Client } from '../../models/Client';
 
-export function listenClients(companyId: string, callback: (newClients: Client[]) => void) {
+export const listenClients = (companyId: string, callback: (newClients: Client[]) => void): () => void => {
     return firestore()
         .collection('companies')
         .doc(companyId)

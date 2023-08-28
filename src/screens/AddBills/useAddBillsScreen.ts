@@ -2,11 +2,11 @@ import { useContext, useState } from 'react'
 import { CompanyContext } from "../../context/CompanyContext/CompanyContext";
 import { useNavigation } from '@react-navigation/native';
 import { utcToZonedTime } from 'date-fns-tz';
-import { Client } from '../../types/Client';
-import { addBill } from './services';
-import { Bill } from '../../types/Bill';
+import { Bill } from '../../models/Bill';
+import { createBill } from '../../services/bill/createBill';
+import { UseAddBillsScreenProps } from './types/useAddBillsScreenProps';
 
-export function useAddBillsScreen({ client }: { client: Client }) {
+export function useAddBillsScreen({ client }: UseAddBillsScreenProps) {
     const { company } = useContext(CompanyContext);
     const navigation = useNavigation();
     const [open, setOpen] = useState(false);
@@ -24,20 +24,23 @@ export function useAddBillsScreen({ client }: { client: Client }) {
         const amount = parseFloat(
             data?.amount.replace(/\./g, '').replace(',', '.'),
         );
-        if (client?.document) {
-            const newBill: Bill = {
-                ...data,
-                amount: amount,
-                expiration: date,
-                clientName: client?.name,
-                clientId: client?.id,
-                companyId: company?.id,
-                paid: false,
-            };
 
-            addBill(newBill);
-            handleBack();
+        if (!client?.document) {
+            return;
         }
+
+        const newBill: Bill = {
+            ...data,
+            amount: amount,
+            expiration: date,
+            clientName: client?.name,
+            clientId: client?.id,
+            companyId: company?.id,
+            paid: false,
+        };
+
+        createBill(newBill);
+        handleBack();
     };
 
     return {

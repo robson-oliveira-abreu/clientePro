@@ -1,19 +1,11 @@
 import { useEffect, useState, useContext, useCallback } from 'react';
-
-import firestore, {
-    FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
 import { AuthContext } from '../context/AuthContext/AuthContext';
-
-export interface ICompany extends FirebaseFirestoreTypes.DocumentData {
-    name?: string;
-    owner?: string;
-    id?: string;
-    photo?: string;
-}
+import { getCompany } from '../services/company/getCompany';
+import { createCompany } from '../services/company/createCompany';
+import { Company } from '../models/Company';
 
 export function useCompany() {
-    const [company, setCompany] = useState<ICompany | null | undefined>(null);
+    const [company, setCompany] = useState<Company | null | undefined>(null);
     const auth = useContext(AuthContext);
 
     const [initializing, setInitializing] = useState(true);
@@ -23,30 +15,25 @@ export function useCompany() {
             return;
         }
 
-        setCompany({
+        const companyData: Company = {
             name: companyName,
             owner: name,
             id: auth.user!.uid,
-        });
+        }
 
-        firestore().collection('companies').doc(auth.user.uid).set({
-            name: companyName,
-            owner: name,
-            id: auth.user.uid,
-        });
+        setCompany(companyData);
+        createCompany(auth.user.uid, companyData);
     }
 
-    const handleGetCompany = useCallback(() => {
-        firestore()
-            .collection('companies')
-            .doc(auth?.user?.uid)
-            .get()
-            .then(_company => {
-                setCompany(_company.data());
-                if (initializing) {
-                    setInitializing(oldState => !oldState);
-                }
-            });
+    const handleGetCompany = useCallback(async () => {
+        const data = await getCompany(auth?.user?.uid!)
+
+        setCompany(data);
+
+        if (initializing) {
+            setInitializing(oldState => !oldState);
+        }
+
     }, [auth?.user?.uid, initializing])
 
     useEffect(() => {

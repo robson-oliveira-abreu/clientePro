@@ -1,17 +1,7 @@
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import React, { createContext } from 'react';
-import { ICompany, useCompany } from '../../hooks/useCompany';
-
-interface CompanyProviderProps {
-    children: React.ReactElement;
-}
-
-type CompanyContextProps = {
-    company: ICompany | null | undefined;
-    initializing: boolean;
-    handleSaveCompany: (companyName: string, name: string) => void;
-    handleGetCompany: () => void;
-};
+import { useCompany } from '../../hooks/useCompany';
+import { CompanyContextProps } from './types/companyContextProps';
+import { CompanyProviderProps } from './types/companyProviderProps'
 
 const CompanyContext = createContext<CompanyContextProps>({
     company: null,

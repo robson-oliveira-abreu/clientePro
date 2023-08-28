@@ -1,8 +1,8 @@
 import firestore from "@react-native-firebase/firestore";
-import { Bill } from "../../types/Bill";
+import { Bill } from "../../models/Bill";
 
 
-export async function addBill(newBill: Bill) {
+export const createBill = async (newBill: Bill): Promise<void> => {
     return firestore()
         .collection('bills')
         .add(newBill)

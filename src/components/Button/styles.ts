@@ -1,12 +1,8 @@
-import { TouchableOpacityProps } from 'react-native';
 import styled from 'styled-components/native';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { ButtonStyleProps } from './types/buttonStyleProps';
 
-interface StyledButtonProps extends TouchableOpacityProps {
-    transparent?: boolean;
-}
-
-export const Container = styled.TouchableOpacity<StyledButtonProps>`
+export const Container = styled.TouchableOpacity<ButtonStyleProps>`
     width: 100%;
     height: 62px;
     background-color: ${({ theme, transparent }) =>

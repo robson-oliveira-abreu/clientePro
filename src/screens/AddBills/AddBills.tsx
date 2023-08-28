@@ -8,7 +8,7 @@ import { Button } from '../../components/Button/button';
 import DatePicker from 'react-native-date-picker';
 import { format } from 'date-fns-tz';
 import { useAddBillsScreen } from './useAddBillsScreen';
-import { AddBillNavigationProps } from './types';
+import { AddBillNavigationProps } from './types/addBillNavigationProps';
 import { InputForm } from '../../components/InputForm/InputForm';
 import * as S from './styles';
 

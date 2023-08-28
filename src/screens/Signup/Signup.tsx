@@ -5,10 +5,10 @@ import { Input } from '../../components/Input/Input';
 
 import { Container, Header, Form, Footer } from './styles';
 
-import { SignupScreenProps } from './types';
+import { SignupProps } from './types/signupProps';
 import { useSignupScreen } from './useSignupScreen';
 
-export function Signup({ navigation }: SignupScreenProps) {
+export function Signup({ navigation }: SignupProps) {
     const {
         email,
         setEmail,
