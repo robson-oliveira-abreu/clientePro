@@ -1,6 +1,7 @@
 import React from 'react';
 import * as S from './styles';
 import { BillProps } from './types/billProps';
+import { FormatCurrencyBRL } from '../../utils/FormatCurrencyBRL';
 
 export function Bill({
     description,
@@ -20,10 +21,7 @@ export function Bill({
                 )}
             </S.ContentDetails>
             <S.BillAmount paid={paid}>
-                {amount.toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                })}
+                {FormatCurrencyBRL(amount)}
             </S.BillAmount>
         </S.Container>
     );

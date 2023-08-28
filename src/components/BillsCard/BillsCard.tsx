@@ -1,6 +1,7 @@
 import React from 'react';
 import * as S from './styels';
 import { BillsCardProps } from './types/billsCardProps';
+import { FormatCurrencyBRL } from '../../utils/FormatCurrencyBRL';
 
 export function BillsCard({ bills }: BillsCardProps) {
     const title = bills[0].clientName;
@@ -11,10 +12,7 @@ export function BillsCard({ bills }: BillsCardProps) {
             <S.RowContentTitle>
                 <S.Title numberOfLines={1}>{title}</S.Title>
                 <S.AmountTitle>
-                    {totalAmount.toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                    })}
+                    {FormatCurrencyBRL(totalAmount)}
                 </S.AmountTitle>
             </S.RowContentTitle>
             {bills.map(bill => {
@@ -24,10 +22,7 @@ export function BillsCard({ bills }: BillsCardProps) {
                             {bill.description}
                         </S.Description>
                         <S.Amount>
-                            {bill.amount!.toLocaleString('pt-BR', {
-                                style: 'currency',
-                                currency: 'BRL',
-                            })}
+                            {FormatCurrencyBRL(bill.amount!)}
                         </S.Amount>
                     </S.RowContent>
                 );
