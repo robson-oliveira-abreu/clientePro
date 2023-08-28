@@ -37,7 +37,6 @@ export function useCompany() {
     }
 
     const handleGetCompany = useCallback(() => {
-        console.log('aqui')
         firestore()
             .collection('companies')
             .doc(auth?.user?.uid)
