@@ -31,10 +31,9 @@ export const EditButton = styled.ScrollView`
 export const ContentTitle = styled.Text`
     font-size: ${RFValue(14)}px;
     color: ${({theme}) => theme.colors.text};
-    margin: 24px 16px 16px;
+    margin: 24px 16px 0px;
 `;
 
 export const Content = styled.View`
     flex: 1;
-    padding: 0 16px;
 `;

@@ -26,7 +26,6 @@ export const BillTitle = styled.Text`
 `;
 
 export const BillDescription = styled.Text`
-    flex: 1;
     font-size: ${RFValue(14)}px;
     color: ${({ theme }) => theme.colors.text_details};
 `;

@@ -53,6 +53,7 @@ export function Client({ route, navigation }: ClientProps) {
                             paid={item.paid}
                         />
                     )}
+                    contentContainerStyle={{padding: 16}}
                     showsVerticalScrollIndicator={false}
                 />
             </S.Content>

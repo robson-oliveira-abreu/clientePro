@@ -2,6 +2,7 @@ import React from 'react';
 import * as S from './styles';
 import { BillProps } from './types/billProps';
 import { FormatCurrencyBRL } from '../../utils/FormatCurrencyBRL';
+import { globalStyles } from '../../styles/globalStyles';
 
 export function Bill({
     description,
@@ -11,7 +12,7 @@ export function Bill({
     ...rest
 }: BillProps) {
     return (
-        <S.Container {...rest}>
+        <S.Container {...rest} style={[globalStyles.shadow_sm]}>
             <S.ContentDetails>
                 <S.BillTitle numberOfLines={1}>{description}</S.BillTitle>
                 {client && (
@@ -20,9 +21,7 @@ export function Bill({
                     </S.BillDescription>
                 )}
             </S.ContentDetails>
-            <S.BillAmount paid={paid}>
-                {FormatCurrencyBRL(amount)}
-            </S.BillAmount>
+            <S.BillAmount paid={paid}>{FormatCurrencyBRL(amount)}</S.BillAmount>
         </S.Container>
     );
 }

@@ -45,7 +45,7 @@ export function AppTabRoutes() {
                 tabBarIcon: ({ color }) => tabIcons(route.name, color),
                 headerShown: false,
                 tabBarStyle: {
-                    backgroundColor: theme.colors.background_primary,
+                    backgroundColor: theme.colors.background_secondary,
                     height: 60,
                 },
                 tabBarLabelStyle: {

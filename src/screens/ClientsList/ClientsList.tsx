@@ -1,46 +1,36 @@
 import React from 'react';
 
 import { AddButton } from '../../components/AddButton/AddButton';
-import { InputSearch } from '../../components/InputSearch/InputSearch';
 
 import { ClientListProps } from './types/clientListProps';
 import { useClientsListScreen } from './useClientsListScreen';
 
 import * as S from './styles';
-import Animated, { SlideInRight } from 'react-native-reanimated';
 import { FlatList, ListRenderItemInfo } from 'react-native';
 import { Client } from '../../models/Client';
+import { ClientCard } from './components/ClientCard/ClientCard';
+import { ClientListHeader } from './components/ClientListHeader/ClientListHeader';
 
 export function ClientsList({ navigation }: ClientListProps) {
-    const { filterValue, clients, setFilterValue } =
-        useClientsListScreen();
+    const { filterValue, clients, setFilterValue } = useClientsListScreen();
 
     const renderItem = ({ item, index }: ListRenderItemInfo<Client>) => (
-        <Animated.View
-            entering={SlideInRight.delay(50 * (index > 10 ? 10 : index))}
-        >
-            <S.CardCLient
-                key={item.id}
-                onPress={() => navigation?.navigate('Client', { client: item })}
-            >
-                <S.CardCLientTitle>{item.name}</S.CardCLientTitle>
-            </S.CardCLient>
-        </Animated.View>
+        <ClientCard item={item} index={index} navigation={navigation} />
     );
 
     return (
         <S.Container>
-            <S.Header>
-                <InputSearch
-                    onChangeText={setFilterValue}
-                    value={filterValue}
-                />
-            </S.Header>
-            <S.Title>Clientes</S.Title>
             <FlatList
+                ListHeaderComponent={
+                    <ClientListHeader
+                        filterValue={filterValue}
+                        setFilterValue={setFilterValue}
+                    />
+                }
                 data={clients}
                 renderItem={renderItem}
                 keyExtractor={(item: any) => item.document}
+                contentContainerStyle={{ padding: 16 }}
             />
             <AddButton onPress={() => navigation?.navigate('AddClient')} />
         </S.Container>

@@ -11,7 +11,7 @@ export function BackButton({ size, ...rest }: BackButtonProps) {
 
     return (
         <Container onPress={goBack} {...rest}>
-            <Icon name="chevron-left" size={size} color={theme.colors.shape} />
+            <Icon name="chevron-left" size={size} color={theme.colors.text} />
         </Container>
     );
 }

@@ -22,14 +22,20 @@ export function Bills() {
 
     return (
         <Container>
-            <InputSearch value={search} onChangeText={setSearch} />
-
-            <Title>Contas</Title>
-
             <FlatList
+                ListHeaderComponent={
+                    <>
+                        <InputSearch value={search} onChangeText={setSearch} />
+
+                        <Title>Contas</Title>
+                    </>
+                }
                 data={filteredBills}
                 keyExtractor={([item]) => item.clientId!}
-                contentContainerStyle={{ gap: 10 }}
+                contentContainerStyle={{
+                    gap: 10,
+                    padding: 16,
+                }}
                 renderItem={renderItem}
             />
             <AddButton onPress={handleAddBill} />

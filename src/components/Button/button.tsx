@@ -12,7 +12,7 @@ export function Button({
     return (
         <Container transparent={transparent} disabled={isLoading} {...rest}>
             {!!isLoading && <ActivityIndicator size={30} color="#fff" />}
-            {!isLoading && <Title>{title}</Title>}
+            {!isLoading && <Title  transparentButton={transparent}>{title}</Title>}
         </Container>
     );
 }

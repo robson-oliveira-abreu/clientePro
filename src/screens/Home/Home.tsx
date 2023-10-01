@@ -5,14 +5,11 @@ import {
     ListRenderItemInfo,
     ActivityIndicator,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
 import { OptionsHomeModal } from './components/OptionsHomeModal/OptionsHomeModal';
 
 import { Bill } from '../../components/Bill/Bill';
 import { useTheme } from 'styled-components/native';
 import { CompanyData } from '../CompanyData/CompanyData';
-import { ProfileImage } from '../../components/ProfileImage/ProfileImage';
-import { FormatCurrencyBRL } from '../../utils/FormatCurrencyBRL';
 
 import { useHomeScreen } from './useHomeScreen';
 import { Bill as BillModel } from '../../models/Bill';
@@ -23,6 +20,7 @@ import BottomSheet, {
     BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import Animated, { SlideInRight } from 'react-native-reanimated';
+import { HomeHeader } from './components/HomeHeader/HomeHeader';
 
 export function Home() {
     const theme = useTheme();
@@ -72,37 +70,16 @@ export function Home() {
                     data={unPaidBills}
                     renderItem={renderItem}
                     ListHeaderComponent={
-                        <S.Header>
-                            <S.HeaderTop>
-                                <S.HomeTitle>{company?.name!}</S.HomeTitle>
-                                <S.OptionsButton onPress={handleOpenOptions}>
-                                    <Icon
-                                        name="more-vertical"
-                                        size={30}
-                                        color={theme.colors.text}
-                                    />
-                                </S.OptionsButton>
-                            </S.HeaderTop>
-                            <S.HeaderContent>
-                                <ProfileImage size={120} />
-                                <S.ContentValues>
-                                    <S.Amount>
-                                        {FormatCurrencyBRL(totals.income)}
-                                    </S.Amount>
-                                    <S.AmountReceived>
-                                        {FormatCurrencyBRL(totals.received)}
-                                    </S.AmountReceived>
-                                    <S.AmountReceivable>
-                                        {FormatCurrencyBRL(totals.missing)}
-                                    </S.AmountReceivable>
-                                </S.ContentValues>
-                            </S.HeaderContent>
-                            <S.ContentTitle>A Receber</S.ContentTitle>
-                        </S.Header>
+                        <HomeHeader
+                            company={company}
+                            totals={totals}
+                            handleOpenOptions={handleOpenOptions}
+                        />
                     }
                     showsVerticalScrollIndicator={false}
                     stickyHeaderIndices={[0]}
                     stickyHeaderHiddenOnScroll
+                    contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16 }}
                     ListEmptyComponent={
                         loading ? (
                             <S.Initializing>

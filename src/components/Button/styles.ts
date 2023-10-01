@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { ButtonStyleProps } from './types/buttonStyleProps';
+import { ButtonStyleProps, TextButtonProps } from './types/buttonStyleProps';
 
 export const Container = styled.TouchableOpacity<ButtonStyleProps>`
     width: 100%;
@@ -13,8 +13,8 @@ export const Container = styled.TouchableOpacity<ButtonStyleProps>`
     margin-bottom: 14px;
 `;
 
-export const Title = styled.Text`
-    color: ${({ theme }) => theme.colors.text};
+export const Title = styled.Text<TextButtonProps>`
+    color: ${({ theme, transparentButton }) => transparentButton ? theme.colors.text : theme.colors.shape};
     font-size: ${RFValue(20)}px;
     font-weight: 700;
 `;

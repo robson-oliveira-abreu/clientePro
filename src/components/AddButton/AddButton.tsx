@@ -8,7 +8,7 @@ import { Container } from './styles';
 export function AddButton({ ...rest }: TouchableOpacityProps) {
     const theme = useTheme();
     return (
-        <Container {...rest}>
+        <Container testID='AddButton.component' {...rest}>
             <Icon name="plus" size={32} color={theme.colors.shape_dark} />
         </Container>
     );
