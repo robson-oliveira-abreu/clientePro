@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        // {
+        //     "name": "Debug Android",
+        //     "cwd": "${workspaceFolder}",
+        //     "type": "reactnative",
+        //     "request": "launch",
+        //     "platform": "android",
+        //     "isDynamic": true
+        // },
+        // {
+        //     "name": "Run Android",
+        //     "cwd": "${workspaceFolder}",
+        //     "type": "reactnative",
+        //     "request": "launch",
+        //     "platform": "android",
+        //     "enableDebug": false,
+        //     "isDynamic": true
+        // },
+        {
+            "name": "Debug Android Custom",
+            "type": "reactnative",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "platform": "android",
+            "internalConsoleOptions": "openOnSessionStart",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            ],
+        }
+    ]
+}
